@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useProfile } from '../../hooks/use-profile';
 import HabitModal from '../habits/habit-modal-wrapper';
 import ReminderModal from '../reminders/reminder-modal-wrapper';
 
 export default function HomeHeader() {
-  const [isHabitModalOpen, setIsHabitModalOpen] = useState(false);
-  const [isReminderModalOpen, setIsReminderModalOpen] = useState(false);
+   const { profile } = useProfile();
+   const [isHabitModalOpen, setIsHabitModalOpen] = useState(false);
+   const [isReminderModalOpen, setIsReminderModalOpen] = useState(false);
 
-  return (
-    <>
-      <View style={styles.sectionHeader}>
-        <Text style={styles.sectionTitle}>Welcome back, User</Text>
+   return (
+     <>
+       <View style={styles.sectionHeader}>
+         <Text style={styles.sectionTitle}>Welcome back, {profile.name || 'User'}</Text>
         <View style={styles.buttonContainer}>
           <TouchableOpacity 
             style={styles.addButton} 

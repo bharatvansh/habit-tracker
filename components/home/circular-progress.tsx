@@ -15,14 +15,14 @@ const radius = (size - strokeWidth) / 2;
 const circumference = radius * 2 * Math.PI;
 
 export default function CircularProgress({
-  percentage,
-  color,
-  text,
-}: CircularProgressProps) {
-  const strokeDashoffset = circumference - (circumference * percentage) / 100;
-  return (
-    <View style={styles.container}>
-      <Svg width={size} height={size}>
+   percentage,
+   color,
+   text,
+ }: CircularProgressProps) {
+   const strokeDashoffset = circumference - (circumference * percentage) / 100;
+   return (
+     <View style={[styles.container, { width: size, height: size }]}>
+       <Svg width={size} height={size} style={styles.svg}>
         {/* Background circle */}
         <Circle
           fill="#0f0f0f"
@@ -63,15 +63,19 @@ export default function CircularProgress({
 
 const styles = StyleSheet.create({
   container: {
-    position: 'relative',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 16,
   },
-  textContainer: {
+  svg: {
     position: 'absolute',
+    top: 0,
+    left: 0,
+  },
+  textContainer: {
     justifyContent: 'center',
     alignItems: 'center',
+    zIndex: 10,
   },
   progressText: {
     fontSize: 16,

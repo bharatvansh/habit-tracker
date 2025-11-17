@@ -1,6 +1,6 @@
 "use client"
 
-import type { Habit } from "@/store/habit-store"
+import type { Habit } from "../store/habit-store"
 
 /**
  * Calculate completion rate for habits based on different timeframes
