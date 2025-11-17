@@ -1,31 +1,69 @@
-"use client"
-
-import { useState } from "react"
-import HabitModal from "@/components/habits/habit-modal"
-import ReminderModal from "@/components/reminders/reminder-modal"
+import React, { useState } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import HabitModal from '../habits/habit-modal';
+import ReminderModal from '../reminders/reminder-modal';
 
 export default function HomeHeader() {
-  const [isHabitModalOpen, setIsHabitModalOpen] = useState(false)
-  const [isReminderModalOpen, setIsReminderModalOpen] = useState(false)
+  const [isHabitModalOpen, setIsHabitModalOpen] = useState(false);
+  const [isReminderModalOpen, setIsReminderModalOpen] = useState(false);
 
   return (
     <>
-      <div className="section-header">
-        <h2 className="section-title">Welcome back, User</h2>
-        <div style={{ display: "flex", gap: "10px" }}>
-          <button className="add-btn" onClick={() => setIsHabitModalOpen(true)}>
-            <i className="fa-solid fa-plus"></i>
-            <span>Quick Add Habit</span>
-          </button>
-          <button className="add-btn" onClick={() => setIsReminderModalOpen(true)}>
-            <i className="fa-solid fa-plus"></i>
-            <span>Quick Add Reminder</span>
-          </button>
-        </div>
-      </div>
+      <View style={styles.sectionHeader}>
+        <Text style={styles.sectionTitle}>Welcome back, User</Text>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity 
+            style={styles.addButton} 
+            onPress={() => setIsHabitModalOpen(true)}
+          >
+            <Ionicons name="add" size={16} color="#ffffff" />
+            <Text style={styles.addButtonText}>Quick Add Habit</Text>
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={styles.addButton} 
+            onPress={() => setIsReminderModalOpen(true)}
+          >
+            <Ionicons name="add" size={16} color="#ffffff" />
+            <Text style={styles.addButtonText}>Quick Add Reminder</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
 
-      {isHabitModalOpen && <HabitModal onClose={() => setIsHabitModalOpen(false)} />}
-      {isReminderModalOpen && <ReminderModal onClose={() => setIsReminderModalOpen(false)} />}
+      <HabitModal visible={isHabitModalOpen} onClose={() => setIsHabitModalOpen(false)} />
+      <ReminderModal visible={isReminderModalOpen} onClose={() => setIsReminderModalOpen(false)} />
     </>
-  )
+  );
 }
+
+const styles = StyleSheet.create({
+  sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  sectionTitle: {
+    fontSize: 24,
+    fontWeight: '600',
+    color: '#ffffff',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    gap: 10,
+  },
+  addButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#8a2be2',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 8,
+    gap: 6,
+  },
+  addButtonText: {
+    color: '#ffffff',
+    fontSize: 14,
+    fontWeight: '500',
+  },
+});
