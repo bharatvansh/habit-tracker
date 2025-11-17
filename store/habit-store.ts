@@ -18,7 +18,7 @@ export interface Habit {
   lastCompletedDate: string | null
   weeklyCompleted: number
   createdAt: string
-  // New fields for quick wins
+  // Additional fields
   completionNotes?: { date: string; note: string }[]
   color?: string
   completionHistory?: { date: string; time: string }[]

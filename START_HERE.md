@@ -19,12 +19,10 @@ Welcome! You asked for recommendations to make Habitual the most unique and help
 ### If you have 30 minutes...
 **Read these in order:**
 1. [IMPROVEMENTS_SUMMARY.md](./IMPROVEMENTS_SUMMARY.md) - Full document
-2. [QUICK_WINS.md](./QUICK_WINS.md) - Top 5 features
-3. [COMPETITIVE_ANALYSIS.md](./COMPETITIVE_ANALYSIS.md) - "Market Gaps" section
+2. [COMPETITIVE_ANALYSIS.md](./COMPETITIVE_ANALYSIS.md) - "Market Gaps" section
 
 **You'll learn:**
 - Complete vision for the app
-- Quick wins you can ship this week
 - How you'll beat competitors
 - Market opportunity and positioning
 
@@ -49,12 +47,7 @@ Welcome! You asked for recommendations to make Habitual the most unique and help
    - Detailed descriptions
    - Why each feature matters
 
-4. **[QUICK_WINS.md](./QUICK_WINS.md)** (20 min)
-   - 15 features you can build quickly
-   - Implementation snippets
-   - Priority order
-
-5. **[VISUAL_MOCKUP_GUIDE.md](./VISUAL_MOCKUP_GUIDE.md)** (10 min)
+4. **[VISUAL_MOCKUP_GUIDE.md](./VISUAL_MOCKUP_GUIDE.md)** (10 min)
    - UI/UX specifications
    - Design system
    - Animation guidelines
@@ -70,7 +63,7 @@ Welcome! You asked for recommendations to make Habitual the most unique and help
 ## 🎯 Quick Decision Matrix
 
 ### "I want to start building TODAY"
-→ Go to **[QUICK_WINS.md](./QUICK_WINS.md)**  
+→ Go to **[IMPROVEMENTS_RECOMMENDATIONS.md](./IMPROVEMENTS_RECOMMENDATIONS.md)**  
 Start with: Streak Milestones, Daily Goal Card, Confetti Animations
 
 ### "I want the killer feature that will make us unique"
@@ -154,7 +147,6 @@ See: All visual specifications
 | **IMPROVEMENTS_SUMMARY.md** | Strategic overview & roadmap | 15 pages | 🔥 Must Read |
 | **IMPROVEMENTS_RECOMMENDATIONS.md** | All 24 features detailed | 35 pages | ⭐ Read Next |
 | **COMPETITIVE_ANALYSIS.md** | Market positioning & strategy | 20 pages | ⭐ Read Next |
-| **QUICK_WINS.md** | Immediate actionable features | 18 pages | 🔥 Must Read |
 | **TECHNICAL_IMPLEMENTATION_ROADMAP.md** | Implementation guide | 26 pages | 🛠️ When Building |
 | **VISUAL_MOCKUP_GUIDE.md** | UI/UX specifications | 22 pages | 🎨 For Design |
 
@@ -164,7 +156,7 @@ See: All visual specifications
 
 ## 🎯 Recommended Implementation Path
 
-### Week 1-2: Quick Wins
+### Week 1-2: Initial Features
 **Goal:** Ship visible improvements fast
 
 **Build:**
@@ -252,11 +244,10 @@ See: All visual specifications
 ### Q: How long will this all take?
 **A:** 
 - Top 3 features: 6-8 weeks
-- All quick wins: 3-4 weeks (can be done parallel)
 - Full vision: 16-20 weeks
 
 ### Q: What if I'm a solo developer?
-**A:** Focus on Quick Wins first (Week 1-2), then DNA (Week 3-4). Get feedback before building more.
+**A:** Focus on initial features first (Week 1-2), then DNA (Week 3-4). Get feedback before building more.
 
 ### Q: Should I hire a designer?
 **A:** Yes, for DNA visualization. The visual quality matters for shareability. Budget $1,000-2,000 for quality work.
@@ -274,8 +265,8 @@ See: All visual specifications
 
 ## 🎪 Success Criteria
 
-### Week 1-2 (Quick Wins)
-- ✅ Ship 5 quick win features
+### Week 1-2 (Initial Features)
+- ✅ Ship 5 initial features
 - ✅ Get user feedback
 - ✅ Measure engagement increase
 
@@ -307,7 +298,7 @@ See: All visual specifications
 
 1. ✅ Read IMPROVEMENTS_SUMMARY.md (20 min)
 2. ✅ Choose your path:
-   - **Fast track:** Quick Wins → DNA → Launch
+   - **Fast track:** Initial Features → DNA → Launch
    - **Strategic:** Read all docs → Plan → Execute
 3. ✅ Set up project board with chosen features
 4. ✅ Start building!
@@ -350,12 +341,11 @@ You asked for extraordinary features to make this app truly unique.
 
 **We delivered:**
 - 24 major features across 8 tiers
-- 15 quick wins you can build today
 - 3 killer features no competitor has
 - Complete technical implementations
 - UI/UX specifications
 - Market analysis and strategy
-- 136 pages of detailed recommendations
+- Comprehensive detailed recommendations
 
 **Now it's your turn.**
 
@@ -363,6 +353,6 @@ Go build something extraordinary. 🚀
 
 ---
 
-*Questions? Review the docs. Still stuck? Start with QUICK_WINS.md and ship something this week.*
+*Questions? Review the docs. Start with IMPROVEMENTS_RECOMMENDATIONS.md and ship something this week.*
 
 *Good luck! 🎯*
