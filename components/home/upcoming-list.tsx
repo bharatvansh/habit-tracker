@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useReminderStore } from '../../store/reminder-store';
 import { useHabitStore } from '../../store/habit-store';
+import { useDNAStore } from '../../store/habit-dna-store';
 
 interface UpcomingItem {
   type: "reminder" | "habit";
@@ -19,6 +20,7 @@ interface UpcomingItem {
 export default function UpcomingList({ showHeader = false }: { showHeader?: boolean }) {
   const { reminders } = useReminderStore();
   const { habits, markHabitComplete } = useHabitStore();
+  const { generateDNA } = useDNAStore();
   const [upcomingItems, setUpcomingItems] = useState<UpcomingItem[]>([]);
 
   useEffect(() => {
@@ -97,6 +99,10 @@ export default function UpcomingList({ showHeader = false }: { showHeader?: bool
 
   const handleCompleteHabit = (id: string, title: string) => {
     markHabitComplete(id);
+    // Regenerate DNA after habit completion
+    setTimeout(() => {
+      generateDNA(habits);
+    }, 100);
     Alert.alert("Habit completed", `"${title}" marked complete for today.`);
   };
 
