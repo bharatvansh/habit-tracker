@@ -7,6 +7,7 @@ import StatCards from '../../components/home/stat-cards';
 import WeeklyView from '../../components/home/weekly-view';
 import UpcomingList from '../../components/home/upcoming-list';
 import DailyGoal from '../../components/home/DailyGoal';
+import DNAPreview from '../../components/home/DNAPreview';
 
 export default function HomePage() {
   const { loadHabits, isLoading: habitsLoading } = useHabitStore();
@@ -45,6 +46,7 @@ export default function HomePage() {
     <View style={styles.container}>
       <HomeHeader />
       <DailyGoal />
+      <DNAPreview />
       <StatCards />
 
       <View style={styles.sectionHeader}>

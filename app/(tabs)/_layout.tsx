@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 const navItems = [
   { name: 'index', title: 'Home', icon: 'home' as const },
+  { name: 'dna', title: 'Habit DNA™', icon: 'fitness' as const },
   { name: 'analytics', title: 'Analytics', icon: 'analytics' as const },
   { name: 'reminders', title: 'Reminders', icon: 'notifications' as const },
   { name: 'habits', title: 'Habits', icon: 'checkbox' as const },
