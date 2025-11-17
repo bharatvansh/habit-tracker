@@ -5,6 +5,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { PaperProvider } from 'react-native-paper';
 import { ProfileProvider } from '../hooks/use-profile';
 import { WeeklyResetHandler } from '../components/weekly-reset-handler';
+import { SessionTracker } from '../components/session-tracker';
 import * as Notifications from 'expo-notifications';
 
 // Configure notifications
@@ -30,6 +31,7 @@ export default function RootLayout() {
           </Stack>
           <StatusBar style="light" />
           <WeeklyResetHandler />
+          <SessionTracker />
         </SafeAreaProvider>
       </PaperProvider>
     </ProfileProvider>

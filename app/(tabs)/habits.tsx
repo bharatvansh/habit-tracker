@@ -10,6 +10,9 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { useHabitStore } from '../../store/habit-store';
 import HabitModal from '../../components/habits/habit-modal-wrapper';
+import WeeklyProgress from '../../components/habits/WeeklyProgress';
+import { analyzeOptimalTime } from '../../lib/time-analyzer';
+import { getCompletionTrend, getTrendIcon, getTrendColor } from '../../lib/trend-analyzer';
 
 export default function HabitsPage() {
   const { habits, deleteHabit, markHabitComplete } = useHabitStore();
@@ -43,9 +46,14 @@ export default function HabitsPage() {
 
   const renderHabit = ({ item }: { item: any }) => {
     const isCompletedToday = getTodayStatus(item);
+    const optimalTime = analyzeOptimalTime(item);
+    const trend = getCompletionTrend(item);
+    const trendIcon = getTrendIcon(trend);
+    const trendColor = getTrendColor(trend);
+    const habitColor = item.color || '#8a2be2';
     
     return (
-      <View style={styles.habitCard}>
+      <View style={[styles.habitCard, { borderLeftWidth: 4, borderLeftColor: habitColor }]}>
         <View style={styles.habitInfo}>
           <View style={styles.habitHeader}>
             <Text style={styles.habitName}>{item.name}</Text>
@@ -68,6 +76,20 @@ export default function HabitsPage() {
               <Text style={styles.detailText}>{item.frequency}</Text>
             </View>
           </View>
+
+          {optimalTime !== 'Not enough data yet' && (
+            <View style={styles.suggestion}>
+              <Text style={styles.suggestionText}>💡 {optimalTime}</Text>
+            </View>
+          )}
+
+          <View style={styles.trendRow}>
+            <Text style={[styles.trendText, { color: trendColor }]}>
+              {trendIcon} Trend: {trend === 'up' ? 'Improving' : trend === 'down' ? 'Declining' : 'Stable'}
+            </Text>
+          </View>
+
+          <WeeklyProgress habit={item} />
           
           <View style={styles.habitStats}>
             <View style={styles.stat}>
@@ -290,6 +312,23 @@ const styles = StyleSheet.create({
   },
   emptyButtonText: {
     color: '#ffffff',
+    fontWeight: '600',
+  },
+  suggestion: {
+    marginTop: 8,
+    marginBottom: 4,
+  },
+  suggestionText: {
+    fontSize: 12,
+    color: '#ffc107',
+    fontStyle: 'italic',
+  },
+  trendRow: {
+    marginTop: 4,
+    marginBottom: 8,
+  },
+  trendText: {
+    fontSize: 12,
     fontWeight: '600',
   },
 });

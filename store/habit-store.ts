@@ -3,6 +3,7 @@
 import { create } from "zustand"
 import { persist, createJSONStorage } from "zustand/middleware"
 import AsyncStorage from "@react-native-async-storage/async-storage"
+import { updateWidgetData } from "../lib/widget-data"
 
 export interface Habit {
   id: string
@@ -17,6 +18,10 @@ export interface Habit {
   lastCompletedDate: string | null
   weeklyCompleted: number
   createdAt: string
+  // New fields for quick wins
+  completionNotes?: { date: string; note: string }[]
+  color?: string
+  completionHistory?: { date: string; time: string }[]
 }
 
 // Default categories
@@ -28,11 +33,12 @@ interface HabitStore {
   isLoading: boolean
   loadHabits: () => void
   addHabit: (habit: Omit<Habit, "id">) => void
-  markHabitComplete: (id: string) => void
+  markHabitComplete: (id: string, note?: string) => void
   deleteHabit: (id: string) => void
   addCategory: (category: string) => void
   deleteCategory: (category: string) => void
   resetWeeklyStats: () => void
+  updateHabitColor: (id: string, color: string) => void
 }
 
 export const useHabitStore = create<HabitStore>()(
@@ -61,7 +67,7 @@ export const useHabitStore = create<HabitStore>()(
         })
       },
 
-      markHabitComplete: (id) => {
+      markHabitComplete: (id, note) => {
         set((state) => {
           const habits = state.habits.map((h) => ({ ...h }))
           const index = habits.findIndex((h) => h.id === id)
@@ -100,6 +106,30 @@ export const useHabitStore = create<HabitStore>()(
           habit.lastCompletedDate = todayStr
           habit.completed = (habit.completed || 0) + 1
           habit.weeklyCompleted = (habit.weeklyCompleted || 0) + 1
+          
+          // Track completion history for analytics
+          if (!habit.completionHistory) {
+            habit.completionHistory = []
+          }
+          habit.completionHistory.push({
+            date: todayStr,
+            time: new Date().toISOString(),
+          })
+          
+          // Add completion note if provided
+          if (note) {
+            if (!habit.completionNotes) {
+              habit.completionNotes = []
+            }
+            habit.completionNotes.push({
+              date: todayStr,
+              note,
+            })
+          }
+          
+          // Update widget data after completion
+          updateWidgetData().catch(console.error)
+          
           return { habits }
         })
       },
@@ -144,6 +174,15 @@ export const useHabitStore = create<HabitStore>()(
             weeklyCompleted: 0,
           }))
 
+          return { habits }
+        })
+      },
+
+      updateHabitColor: (id, color) => {
+        set((state) => {
+          const habits = state.habits.map((h) => 
+            h.id === id ? { ...h, color } : h
+          )
           return { habits }
         })
       },

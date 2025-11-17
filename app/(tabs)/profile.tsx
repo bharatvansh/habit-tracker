@@ -15,18 +15,21 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { useProfile } from '../../hooks/use-profile';
 import { useHabitStore } from '../../store/habit-store';
 import { useReminderStore } from '../../store/reminder-store';
+import { useSessionStore } from '../../store/session-store';
 import { calculateCompletionRate, getLongestStreak } from '../../lib/habit-utils';
 
 export default function ProfilePage() {
    const { profile, updateProfile } = useProfile();
    const { habits } = useHabitStore();
    const { reminders } = useReminderStore();
+   const { getBestNotificationTimes } = useSessionStore();
    const [stats, setStats] = useState({
      totalHabits: 0,
      totalReminders: 0,
      longestStreak: 0,
      completionRate: 0,
    });
+   const [bestNotificationTimes, setBestNotificationTimes] = useState<string[]>([]);
 
    useEffect(() => {
      const longestStreak = getLongestStreak(habits);
@@ -37,7 +40,8 @@ export default function ProfilePage() {
        longestStreak: longestStreak.days,
        completionRate,
      });
-   }, [habits, reminders]);
+     setBestNotificationTimes(getBestNotificationTimes());
+   }, [habits, reminders, getBestNotificationTimes]);
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     name: profile.name || '',
@@ -238,6 +242,24 @@ export default function ProfilePage() {
             trackColor={{ false: '#333', true: '#8a2be2' }}
             thumbColor={formData.darkMode ? '#ffffff' : '#b3b3b3'}
           />
+        </View>
+      </View>
+
+      <View style={styles.formSection}>
+        <Text style={styles.sectionTitle}>Smart Notification Times</Text>
+        <View style={styles.notificationCard}>
+          <Ionicons name="time" size={24} color="#8a2be2" />
+          <View style={styles.notificationInfo}>
+            <Text style={styles.notificationLabel}>
+              Best times to send notifications
+            </Text>
+            <Text style={styles.notificationTimes}>
+              {bestNotificationTimes.join(' • ')}
+            </Text>
+            <Text style={styles.notificationDescription}>
+              Based on when you usually check the app
+            </Text>
+          </View>
         </View>
       </View>
 
@@ -495,5 +517,32 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#b3b3b3',
     textAlign: 'center',
+  },
+  notificationCard: {
+    backgroundColor: '#1e1e1e',
+    borderRadius: 12,
+    padding: 16,
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 12,
+  },
+  notificationInfo: {
+    flex: 1,
+  },
+  notificationLabel: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#ffffff',
+    marginBottom: 8,
+  },
+  notificationTimes: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#8a2be2',
+    marginBottom: 4,
+  },
+  notificationDescription: {
+    fontSize: 12,
+    color: '#b3b3b3',
   },
 });

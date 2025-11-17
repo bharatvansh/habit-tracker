@@ -3,6 +3,8 @@ import { View, Text, StyleSheet, ScrollView, ActivityIndicator } from 'react-nat
 import { Ionicons } from '@expo/vector-icons';
 import { useHabitStore } from '../../store/habit-store';
 import { calculateCompletionRate, getLongestStreak, getHabitsByCategory } from '../../lib/habit-utils';
+import HeatmapCalendar from '../../components/analytics/HeatmapCalendar';
+import CategoryInsights from '../../components/analytics/CategoryInsights';
 
 export default function AnalyticsPage() {
   const { habits } = useHabitStore();
@@ -113,6 +115,15 @@ export default function AnalyticsPage() {
           </View>
         </View>
       </View>
+
+      {habits.length > 0 && <HeatmapCalendar habits={habits} />}
+
+      {habits.length > 0 && (
+        <CategoryInsights 
+          habits={habits} 
+          categories={[...new Set(habits.map(h => h.category))]} 
+        />
+      )}
 
       <View style={styles.chartContainer}>
         <Text style={styles.sectionTitle}>Category Distribution</Text>

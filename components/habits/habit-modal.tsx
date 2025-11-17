@@ -13,6 +13,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useHabitStore } from '../../store/habit-store';
+import ColorPicker from './ColorPicker';
 
 interface HabitModalProps {
   visible: boolean;
@@ -28,6 +29,7 @@ export default function HabitModal({ visible, onClose }: HabitModalProps) {
   const [newCategory, setNewCategory] = useState('');
   const [isAddingNewCategory, setIsAddingNewCategory] = useState(false);
   const [habitReminder, setHabitReminder] = useState(false);
+  const [habitColor, setHabitColor] = useState('#8a2be2');
   const [selectedDays, setSelectedDays] = useState<Record<string, boolean>>({
     Monday: false,
     Tuesday: false,
@@ -94,6 +96,7 @@ export default function HabitModal({ visible, onClose }: HabitModalProps) {
       lastCompletedDate: null,
       weeklyCompleted: 0,
       createdAt: new Date().toISOString(),
+      color: habitColor,
     };
 
     addHabit(habit);
@@ -109,6 +112,7 @@ export default function HabitModal({ visible, onClose }: HabitModalProps) {
     setNewCategory('');
     setIsAddingNewCategory(false);
     setHabitReminder(false);
+    setHabitColor('#8a2be2');
     setSelectedDays({
       Monday: false,
       Tuesday: false,
@@ -256,6 +260,10 @@ export default function HabitModal({ visible, onClose }: HabitModalProps) {
               <Text style={styles.timeText}>{habitTime || 'Select time'}</Text>
               <Ionicons name="time" size={16} color="#b3b3b3" />
             </TouchableOpacity>
+          </View>
+
+          <View style={styles.formGroup}>
+            <ColorPicker selectedColor={habitColor} onColorSelect={setHabitColor} />
           </View>
 
           <View style={styles.formGroup}>

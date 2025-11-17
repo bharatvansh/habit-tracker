@@ -6,6 +6,7 @@ import HomeHeader from '../../components/home/home-header';
 import StatCards from '../../components/home/stat-cards';
 import WeeklyView from '../../components/home/weekly-view';
 import UpcomingList from '../../components/home/upcoming-list';
+import DailyGoal from '../../components/home/DailyGoal';
 
 export default function HomePage() {
   const { loadHabits, isLoading: habitsLoading } = useHabitStore();
@@ -43,6 +44,7 @@ export default function HomePage() {
   return (
     <View style={styles.container}>
       <HomeHeader />
+      <DailyGoal />
       <StatCards />
 
       <View style={styles.sectionHeader}>
