@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useHabitStore } from '../../store/habit-store';
-import HabitModal from '../../components/habits/habit-modal';
+import HabitModal from '../../components/habits/habit-modal-wrapper';
 
 export default function HabitsPage() {
   const { habits, deleteHabit, markHabitComplete } = useHabitStore();

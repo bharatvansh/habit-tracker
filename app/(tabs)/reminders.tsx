@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useReminderStore, type Reminder } from '../../store/reminder-store';
-import ReminderModal from '../../components/reminders/reminder-modal';
+import ReminderModal from '../../components/reminders/reminder-modal-wrapper';
 
 export default function RemindersPage() {
   const { reminders, deleteReminder, toggleComplete } = useReminderStore();

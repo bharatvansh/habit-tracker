@@ -16,7 +16,7 @@ interface UpcomingItem {
   id: string;
 }
 
-export default function UpcomingList() {
+export default function UpcomingList({ showHeader = false }: { showHeader?: boolean }) {
   const { reminders } = useReminderStore();
   const { habits, markHabitComplete } = useHabitStore();
   const [upcomingItems, setUpcomingItems] = useState<UpcomingItem[]>([]);
@@ -103,7 +103,7 @@ export default function UpcomingList() {
   if (upcomingItems.length === 0) {
     return (
       <View style={styles.noItemsContainer}>
-        <Ionicons name="calendar-day" size={32} color="#b3b3b3" style={styles.noItemsIcon} />
+        <Ionicons name="calendar" size={48} color="#4a4a4a" style={styles.noItemsIcon} />
         <Text style={styles.noItemsText}>
           No upcoming habits or reminders for today. Add some to see them here.
         </Text>
@@ -251,14 +251,14 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 32,
+    padding: 48,
     width: '100%',
   },
   noItemsIcon: {
-    marginBottom: 16,
+    marginBottom: 20,
   },
   noItemsText: {
-    color: '#b3b3b3',
+    color: '#7a7a7a',
     textAlign: 'center',
     fontSize: 14,
     lineHeight: 20,

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import HabitModal from '../habits/habit-modal';
-import ReminderModal from '../reminders/reminder-modal';
+import HabitModal from '../habits/habit-modal-wrapper';
+import ReminderModal from '../reminders/reminder-modal-wrapper';
 
 export default function HomeHeader() {
   const [isHabitModalOpen, setIsHabitModalOpen] = useState(false);

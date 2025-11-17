@@ -73,96 +73,103 @@ export default function WeeklyView() {
 
   return (
     <View style={styles.container}>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        <View style={styles.weekContainer}>
-          {/* Days header */}
-          <View style={styles.daysRow}>
-            {weekDays.map((day, index) => (
-              <View key={index} style={styles.dayColumn}>
-                <Text style={styles.dayName}>{day.name}</Text>
-                <View style={[styles.dayDate, day.isToday && styles.today]}>
-                  <Text style={[styles.dayDateText, day.isToday && styles.todayText]}>
-                    {day.date}
-                  </Text>
-                </View>
-              </View>
-            ))}
-          </View>
-
-          {/* Habits */}
-          {hasHabitsThisWeek ? (
-            <View style={styles.habitsRow}>
-              {weekDays.map((day, index) => (
-                <View key={`habits-${index}`} style={styles.dayColumn}>
-                  <View style={styles.dayHabits}>
-                    {day.habits.map((habit, habitIndex) => (
-                      <View
-                        key={habitIndex}
-                        style={[
-                          styles.dayHabit,
-                          habit.completed && styles.completedHabit
-                        ]}
-                      >
-                        <Text
-                          style={[
-                            styles.habitText,
-                            habit.completed && styles.completedHabitText
-                          ]}
-                          numberOfLines={1}
-                        >
-                          {habit.name}
-                        </Text>
-                      </View>
-                    ))}
-                  </View>
-                </View>
-              ))}
-            </View>
-          ) : (
-            <View style={styles.noHabitsContainer}>
-              <Ionicons name="calendar-day" size={32} color="#b3b3b3" style={styles.noHabitsIcon} />
-              <Text style={styles.noHabitsText}>
-                No habits scheduled for this week. Add habits to see your weekly view.
+      {/* Days header */}
+      <View style={styles.daysRow}>
+        {weekDays.map((day, index) => (
+          <View key={index} style={[styles.dayColumn, index === 0 && styles.firstColumn, index === 6 && styles.lastColumn]}>
+            <Text style={styles.dayName}>{day.name}</Text>
+            <View style={[styles.dayDate, day.isToday && styles.today]}>
+              <Text style={[styles.dayDateText, day.isToday && styles.todayText]}>
+                {day.date}
               </Text>
             </View>
-          )}
+          </View>
+        ))}
+      </View>
+
+      {/* Habits */}
+      {hasHabitsThisWeek ? (
+        <View style={styles.habitsRow}>
+          {weekDays.map((day, index) => (
+            <View key={`habits-${index}`} style={[styles.dayColumn, index === 0 && styles.firstColumn, index === 6 && styles.lastColumn]}>
+              <View style={styles.dayHabits}>
+                {day.habits.map((habit, habitIndex) => (
+                  <View
+                    key={habitIndex}
+                    style={[
+                      styles.dayHabit,
+                      habit.completed && styles.completedHabit
+                    ]}
+                  >
+                    <Text
+                      style={[
+                        styles.habitText,
+                        habit.completed && styles.completedHabitText
+                      ]}
+                      numberOfLines={2}
+                    >
+                      {habit.name}
+                    </Text>
+                  </View>
+                ))}
+              </View>
+            </View>
+          ))}
         </View>
-      </ScrollView>
+      ) : (
+        <View style={styles.noHabitsContainer}>
+          <Ionicons name="calendar-outline" size={48} color="#444444" style={styles.noHabitsIcon} />
+          <Text style={styles.noHabitsText}>
+            No habits scheduled for this week. Add habits to see your weekly view.
+          </Text>
+        </View>
+      )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: 20,
-  },
-  weekContainer: {
-    flexDirection: 'column',
+    marginBottom: 24,
   },
   daysRow: {
     flexDirection: 'row',
-    marginBottom: 10,
+    justifyContent: 'space-between',
+    marginBottom: 20,
+    paddingHorizontal: 4,
+  },
+  separator: {
+    height: 1,
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
   },
   habitsRow: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
+    minHeight: 100,
+    paddingHorizontal: 4,
   },
   dayColumn: {
     flex: 1,
     alignItems: 'center',
-    minWidth: 80,
-    marginHorizontal: 4,
+    marginHorizontal: 6,
+  },
+  firstColumn: {
+    marginLeft: 0,
+  },
+  lastColumn: {
+    marginRight: 0,
   },
   dayName: {
     fontSize: 12,
-    color: '#b3b3b3',
-    marginBottom: 4,
+    color: '#999999',
+    marginBottom: 12,
     fontWeight: '500',
   },
   dayDate: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: '#252525',
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: '#1a1a1a',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -170,7 +177,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#8a2be2',
   },
   dayDateText: {
-    fontSize: 14,
+    fontSize: 18,
     color: '#ffffff',
     fontWeight: '600',
   },
@@ -180,24 +187,25 @@ const styles = StyleSheet.create({
   dayHabits: {
     flex: 1,
     width: '100%',
+    gap: 8,
   },
   dayHabit: {
-    backgroundColor: '#252525',
-    borderRadius: 6,
-    padding: 8,
-    marginBottom: 6,
-    minHeight: 36,
+    backgroundColor: '#1a1a1a',
+    borderRadius: 12,
+    paddingVertical: 10,
+    paddingHorizontal: 8,
+    minHeight: 44,
     justifyContent: 'center',
   },
   completedHabit: {
-    backgroundColor: 'rgba(76, 175, 80, 0.2)',
-    borderWidth: 1,
-    borderColor: '#4caf50',
+    backgroundColor: 'rgba(76, 175, 80, 0.15)',
   },
   habitText: {
-    fontSize: 11,
-    color: '#ffffff',
+    fontSize: 12,
+    color: '#cccccc',
     textAlign: 'center',
+    fontWeight: '500',
+    lineHeight: 16,
   },
   completedHabitText: {
     color: '#4caf50',
@@ -207,16 +215,17 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 32,
-    marginTop: 10,
+    paddingVertical: 60,
+    paddingHorizontal: 24,
   },
   noHabitsIcon: {
     marginBottom: 16,
+    opacity: 0.2,
   },
   noHabitsText: {
-    color: '#b3b3b3',
+    color: '#666666',
     textAlign: 'center',
     fontSize: 14,
-    lineHeight: 20,
+    lineHeight: 22,
   },
 });

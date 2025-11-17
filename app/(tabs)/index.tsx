@@ -52,6 +52,7 @@ export default function HomePage() {
 
       <View style={styles.sectionHeader}>
         <Text style={styles.sectionTitle}>Upcoming Today</Text>
+        <Text style={styles.sectionLink}>Habits & Reminders</Text>
       </View>
       <UpcomingList />
     </View>
@@ -81,12 +82,21 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   sectionHeader: {
-    marginVertical: 16,
-    marginTop: 24,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+    marginTop: 8,
   },
   sectionTitle: {
-    fontSize: 20,
-    fontWeight: '600',
+    fontSize: 18,
+    fontWeight: '700',
     color: '#ffffff',
+    letterSpacing: 0.3,
+  },
+  sectionLink: {
+    fontSize: 13,
+    color: '#888888',
+    fontWeight: '500',
   },
 });

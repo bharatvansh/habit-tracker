@@ -38,6 +38,13 @@ node_modules/
 npm-debug.log
 yarn-error.log
 
+# Next.js
+.next/
+out/
+
+# Editor
+.vscode/
+
 # BUCK
 buck-out/
 \.buckd/

@@ -9,19 +9,30 @@ interface CircularProgressProps {
 }
 
 const { width } = Dimensions.get('window');
-const size = Math.min(width * 0.2, 72);
-const strokeWidth = 6;
+const size = Math.min(width * 0.25, 110);
+const strokeWidth = 10;
 const radius = (size - strokeWidth) / 2;
 const circumference = radius * 2 * Math.PI;
-const strokeDashoffset = circumference - (circumference * percentage) / 100;
 
-export default function CircularProgress({ percentage, color, text }: CircularProgressProps) {
+export default function CircularProgress({
+  percentage,
+  color,
+  text,
+}: CircularProgressProps) {
+  const strokeDashoffset = circumference - (circumference * percentage) / 100;
   return (
     <View style={styles.container}>
       <Svg width={size} height={size}>
         {/* Background circle */}
         <Circle
-          stroke="#333333"
+          fill="#0f0f0f"
+          cx={size / 2}
+          cy={size / 2}
+          r={radius + strokeWidth / 2}
+        />
+        {/* Background track */}
+        <Circle
+          stroke="rgba(255, 255, 255, 0.06)"
           fill="transparent"
           cx={size / 2}
           cy={size / 2}
@@ -40,7 +51,7 @@ export default function CircularProgress({ percentage, color, text }: CircularPr
           strokeDashoffset={strokeDashoffset}
           strokeLinecap="round"
           rotation="-90"
-          origin={size / 2}
+          origin={`${size / 2}, ${size / 2}`}
         />
       </Svg>
       <View style={styles.textContainer}>
@@ -55,6 +66,7 @@ const styles = StyleSheet.create({
     position: 'relative',
     justifyContent: 'center',
     alignItems: 'center',
+    marginBottom: 16,
   },
   textContainer: {
     position: 'absolute',
@@ -62,7 +74,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   progressText: {
-    fontSize: 12,
+    fontSize: 16,
     fontWeight: '600',
     color: '#ffffff',
   },
