@@ -1,21 +1,43 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-  ScrollView,
-  Switch,
-  Alert,
-  Image,
-} from 'react-native';
+   View,
+   Text,
+   TextInput,
+   TouchableOpacity,
+   StyleSheet,
+   ScrollView,
+   Switch,
+   Alert,
+   Image,
+ } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useProfile } from '../../hooks/use-profile';
+import { useHabitStore } from '../../store/habit-store';
+import { useReminderStore } from '../../store/reminder-store';
+import { calculateCompletionRate, getLongestStreak } from '../../lib/habit-utils';
 
 export default function ProfilePage() {
-  const { profile, updateProfile } = useProfile();
+   const { profile, updateProfile } = useProfile();
+   const { habits } = useHabitStore();
+   const { reminders } = useReminderStore();
+   const [stats, setStats] = useState({
+     totalHabits: 0,
+     totalReminders: 0,
+     longestStreak: 0,
+     completionRate: 0,
+   });
+
+   useEffect(() => {
+     const longestStreak = getLongestStreak(habits);
+     const completionRate = calculateCompletionRate(habits, 'month');
+     setStats({
+       totalHabits: habits.length,
+       totalReminders: reminders.length,
+       longestStreak: longestStreak.days,
+       completionRate,
+     });
+   }, [habits, reminders]);
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     name: profile.name || '',
@@ -235,22 +257,22 @@ export default function ProfilePage() {
         <View style={styles.statsGrid}>
           <View style={styles.statCard}>
             <Ionicons name="checkbox" size={24} color="#8a2be2" />
-            <Text style={styles.statValue}>0</Text>
+            <Text style={styles.statValue}>{stats.totalHabits}</Text>
             <Text style={styles.statLabel}>Total Habits</Text>
           </View>
           <View style={styles.statCard}>
             <Ionicons name="notifications" size={24} color="#4caf50" />
-            <Text style={styles.statValue}>0</Text>
+            <Text style={styles.statValue}>{stats.totalReminders}</Text>
             <Text style={styles.statLabel}>Reminders</Text>
           </View>
           <View style={styles.statCard}>
             <Ionicons name="flame" size={24} color="#ff9800" />
-            <Text style={styles.statValue}>0</Text>
+            <Text style={styles.statValue}>{stats.longestStreak}</Text>
             <Text style={styles.statLabel}>Day Streak</Text>
           </View>
           <View style={styles.statCard}>
             <Ionicons name="trophy" size={24} color="#ffc107" />
-            <Text style={styles.statValue}>0%</Text>
+            <Text style={styles.statValue}>{stats.completionRate}%</Text>
             <Text style={styles.statLabel}>Completion Rate</Text>
           </View>
         </View>

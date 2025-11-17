@@ -1,6 +1,6 @@
 "use client"
 
-import type { Habit } from "@/store/habit-store"
+import type { Habit } from "../store/habit-store"
 
 declare global {
   interface Window {
