@@ -1,117 +1,120 @@
-"use client"
-
-import { useEffect, useState } from "react"
-import { useHabitStore } from "@/store/habit-store"
-import { calculateCompletionRate, getTodayProgress } from "@/lib/habit-utils"
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+import { useHabitStore } from '../../store/habit-store';
+import { calculateCompletionRate, getTodayProgress } from '../../lib/habit-utils';
+import CircularProgress from './circular-progress';
 
 export default function StatCards() {
-  const { habits } = useHabitStore()
-  const [todayProgress, setTodayProgress] = useState({ percentage: 0, completed: 0, total: 0 })
-  const [weeklyProgress, setWeeklyProgress] = useState({ percentage: 0, completed: 0, total: 0 })
-  const [streakProgress, setStreakProgress] = useState({ percentage: 0, avgStreak: 0 })
+  const { habits } = useHabitStore();
+  const [todayProgress, setTodayProgress] = useState({ percentage: 0, completed: 0, total: 0 });
+  const [weeklyProgress, setWeeklyProgress] = useState({ percentage: 0, completed: 0, total: 0 });
+  const [streakProgress, setStreakProgress] = useState({ percentage: 0, avgStreak: 0 });
 
   useEffect(() => {
     // Calculate today's progress using the utility function
-    const todayProgressData = getTodayProgress(habits)
-    const todayPercentage = calculateCompletionRate(habits, "today")
+    const todayProgressData = getTodayProgress(habits);
+    const todayPercentage = calculateCompletionRate(habits, "today");
     setTodayProgress({
       percentage: todayPercentage,
       completed: todayProgressData.completed,
       total: todayProgressData.total,
-    })
+    });
 
     // Calculate weekly progress
-    const weeklyPercentage = calculateCompletionRate(habits, "week")
-    const weeklyTotal = habits.reduce((sum, habit) => sum + (habit.days?.length || 7), 0)
-    const weeklyCompleted = habits.reduce((sum, habit) => sum + (habit.weeklyCompleted || 0), 0)
+    const weeklyPercentage = calculateCompletionRate(habits, "week");
+    const weeklyTotal = habits.reduce((sum, habit) => sum + (habit.days?.length || 7), 0);
+    const weeklyCompleted = habits.reduce((sum, habit) => sum + (habit.weeklyCompleted || 0), 0);
     setWeeklyProgress({
       percentage: weeklyPercentage,
       completed: weeklyCompleted,
       total: weeklyTotal,
-    })
+    });
 
     // Calculate streak progress
     const calculateStreakProgress = () => {
-      if (!habits || habits.length === 0) return { percentage: 0, avgStreak: 0 }
+      if (!habits || habits.length === 0) return { percentage: 0, avgStreak: 0 };
 
-      const totalStreak = habits.reduce((sum, habit) => sum + (habit.streak || 0), 0)
-      const avgStreak = Math.round(totalStreak / habits.length)
-      const percentage = Math.min(100, Math.round((avgStreak / 30) * 100))
+      const totalStreak = habits.reduce((sum, habit) => sum + (habit.streak || 0), 0);
+      const avgStreak = Math.round(totalStreak / habits.length);
+      const percentage = Math.min(100, Math.round((avgStreak / 30) * 100));
 
-      return { percentage, avgStreak }
-    }
+      return { percentage, avgStreak };
+    };
 
-    setStreakProgress(calculateStreakProgress())
-  }, [habits])
+    setStreakProgress(calculateStreakProgress());
+  }, [habits]);
 
   return (
-    <div className="grid-container">
+    <View style={styles.gridContainer}>
       {/* Today's Habits Stat Card */}
-      <div className="card stat-card">
-        <div className="progress-container">
-          <svg className="progress-circle" viewBox="0 0 36 36">
-            <path
-              className="progress-circle-bg"
-              d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-            />
-            <path
-              className="progress-circle-value"
-              stroke="var(--purple-primary)"
-              strokeDasharray={`${todayProgress.percentage}, 100`}
-              d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-            />
-          </svg>
-          <div className="progress-text">{todayProgress.percentage}%</div>
-        </div>
-        <div className="stat-value">
+      <View style={styles.statCard}>
+        <CircularProgress 
+          percentage={todayProgress.percentage} 
+          color="#8a2be2"
+          text={`${todayProgress.percentage}%`}
+        />
+        <Text style={styles.statValue}>
           {todayProgress.completed}/{todayProgress.total}
-        </div>
-        <div className="stat-label">Today's Habits</div>
-      </div>
+        </Text>
+        <Text style={styles.statLabel}>Today's Habits</Text>
+      </View>
 
       {/* Weekly Completion Stat Card */}
-      <div className="card stat-card">
-        <div className="progress-container">
-          <svg className="progress-circle" viewBox="0 0 36 36">
-            <path
-              className="progress-circle-bg"
-              d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-            />
-            <path
-              className="progress-circle-value"
-              stroke="var(--success)"
-              strokeDasharray={`${weeklyProgress.percentage}, 100`}
-              d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-            />
-          </svg>
-          <div className="progress-text">{weeklyProgress.percentage}%</div>
-        </div>
-        <div className="stat-value">
+      <View style={styles.statCard}>
+        <CircularProgress 
+          percentage={weeklyProgress.percentage} 
+          color="#4caf50"
+          text={`${weeklyProgress.percentage}%`}
+        />
+        <Text style={styles.statValue}>
           {weeklyProgress.completed}/{weeklyProgress.total}
-        </div>
-        <div className="stat-label">Weekly Completion</div>
-      </div>
+        </Text>
+        <Text style={styles.statLabel}>Weekly Completion</Text>
+      </View>
 
       {/* Current Streak Stat Card */}
-      <div className="card stat-card">
-        <div className="progress-container">
-          <svg className="progress-circle" viewBox="0 0 36 36">
-            <path
-              className="progress-circle-bg"
-              d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-            />
-            <path
-              className="progress-circle-value"
-              stroke="var(--info)"
-              strokeDasharray={`${streakProgress.percentage}, 100`}
-              d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-            />
-          </svg>
-          <div className="progress-text">{streakProgress.percentage}%</div>
-        </div>
-        <div className="stat-value">{streakProgress.avgStreak}</div>
-        <div className="stat-label">Current Streak (Days)</div>
-      </div>
-    </div>
-  )
+      <View style={styles.statCard}>
+        <CircularProgress 
+          percentage={streakProgress.percentage} 
+          color="#2196f3"
+          text={`${streakProgress.percentage}%`}
+        />
+        <Text style={styles.statValue}>{streakProgress.avgStreak}</Text>
+        <Text style={styles.statLabel}>Current Streak (Days)</Text>
+      </View>
+    </View>
+  );
 }
+
+const styles = StyleSheet.create({
+  gridContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 12,
+    marginBottom: 20,
+  },
+  statCard: {
+    flex: 1,
+    backgroundColor: '#1e1e1e',
+    borderRadius: 12,
+    padding: 16,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 12,
+    elevation: 8,
+  },
+  statValue: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#ffffff',
+    marginTop: 8,
+    marginBottom: 4,
+  },
+  statLabel: {
+    fontSize: 12,
+    color: '#b3b3b3',
+    textAlign: 'center',
+  },
+});

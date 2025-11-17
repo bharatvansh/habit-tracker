@@ -1,7 +1,8 @@
 "use client"
 
 import { create } from "zustand"
-import { persist } from "zustand/middleware"
+import { persist, createJSONStorage } from "zustand/middleware"
+import AsyncStorage from "@react-native-async-storage/async-storage"
 
 export interface Habit {
   id: string
@@ -122,9 +123,13 @@ export const useHabitStore = create<HabitStore>()(
         set((state) => {
           const habitsWithCategory = state.habits.filter((h) => h.category === category)
           if (habitsWithCategory.length > 0) {
-            alert(
-              `Cannot delete category "${category}" because it is being used by ${habitsWithCategory.length} habit(s).`,
-            )
+            // For React Native, we'll use Alert instead of alert
+            import('react-native').then(({ Alert }) => {
+              Alert.alert(
+                "Cannot Delete Category",
+                `Cannot delete category "${category}" because it is being used by ${habitsWithCategory.length} habit(s).`,
+              )
+            })
             return state
           }
           const newCategories = state.categories.filter((c) => c !== category)
@@ -145,6 +150,7 @@ export const useHabitStore = create<HabitStore>()(
     }),
     {
       name: "habit-storage",
+      storage: createJSONStorage(() => AsyncStorage),
       onRehydrateStorage: () => (state) => {
         state?.isLoading !== undefined && (state.isLoading = false)
       },
