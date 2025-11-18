@@ -7,6 +7,12 @@ import { ProfileProvider } from '../hooks/use-profile';
 import { WeeklyResetHandler } from '../components/weekly-reset-handler';
 import { SessionTracker } from '../components/session-tracker';
 import * as Notifications from 'expo-notifications';
+import { useFonts } from 'expo-font';
+import * as SplashScreen from 'expo-splash-screen';
+import { useEffect } from 'react';
+
+// Keep splash screen visible while fonts load
+SplashScreen.preventAutoHideAsync();
 
 // Configure notifications
 Notifications.setNotificationHandler({
@@ -18,6 +24,20 @@ Notifications.setNotificationHandler({
 });
 
 export default function RootLayout() {
+  const [fontsLoaded] = useFonts({
+    'Ionicons': require('@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Ionicons.ttf'),
+  });
+
+  useEffect(() => {
+    if (fontsLoaded) {
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded]);
+
+  if (!fontsLoaded) {
+    return null;
+  }
+
   return (
     <ProfileProvider>
       <PaperProvider>
