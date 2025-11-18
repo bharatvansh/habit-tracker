@@ -3,19 +3,25 @@
 import type React from "react"
 
 import { useState, useEffect } from "react"
-import { useHabitStore } from "@/store/habit-store"
+import { useHabitStore, type Habit } from "@/store/habit-store"
 import { useToast } from "@/hooks/use-toast"
 
-export default function HabitModal({ onClose }: { onClose: () => void }) {
-  const { addHabit, categories, addCategory } = useHabitStore()
+interface HabitModalProps {
+  onClose: () => void
+  editId?: string
+  existingHabit?: Habit
+}
+
+export default function HabitModal({ onClose, editId, existingHabit }: HabitModalProps) {
+  const { addHabit, editHabit, categories, addCategory } = useHabitStore()
   const { toast } = useToast()
-  const [habitName, setHabitName] = useState("")
-  const [habitTime, setHabitTime] = useState("")
+  const [habitName, setHabitName] = useState(existingHabit?.name || "")
+  const [habitTime, setHabitTime] = useState(existingHabit?.time || "")
   const [habitFrequency, setHabitFrequency] = useState("daily")
-  const [habitCategory, setHabitCategory] = useState(categories[0] || "")
+  const [habitCategory, setHabitCategory] = useState(existingHabit?.category || categories[0] || "")
   const [newCategory, setNewCategory] = useState("")
   const [isAddingNewCategory, setIsAddingNewCategory] = useState(false)
-  const [habitReminder, setHabitReminder] = useState(false)
+  const [habitReminder, setHabitReminder] = useState(existingHabit?.reminder || false)
   const [selectedDays, setSelectedDays] = useState<Record<string, boolean>>({
     Monday: false,
     Tuesday: false,
@@ -25,6 +31,45 @@ export default function HabitModal({ onClose }: { onClose: () => void }) {
     Saturday: false,
     Sunday: false,
   })
+
+  // Initialize form with existing habit data
+  useEffect(() => {
+    if (existingHabit) {
+      setHabitName(existingHabit.name)
+      setHabitTime(existingHabit.time || "")
+      setHabitCategory(existingHabit.category || categories[0] || "")
+      setHabitReminder(existingHabit.reminder || false)
+      
+      // Set selected days based on existing habit
+      if (existingHabit.days && existingHabit.days.length > 0) {
+        const daysState: Record<string, boolean> = {
+          Monday: false,
+          Tuesday: false,
+          Wednesday: false,
+          Thursday: false,
+          Friday: false,
+          Saturday: false,
+          Sunday: false,
+        }
+        existingHabit.days.forEach(day => {
+          daysState[day] = true
+        })
+        setSelectedDays(daysState)
+        
+        // Determine frequency based on selected days
+        const allDays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+        const weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+        
+        if (existingHabit.days.length === 7 || JSON.stringify(existingHabit.days.sort()) === JSON.stringify(allDays.sort())) {
+          setHabitFrequency("daily")
+        } else if (JSON.stringify(existingHabit.days.sort()) === JSON.stringify(weekdays.sort())) {
+          setHabitFrequency("mon-fri")
+        } else {
+          setHabitFrequency("custom")
+        }
+      }
+    }
+  }, [existingHabit, categories])
 
   const [timePickerOpen, setTimePickerOpen] = useState(false)
   const [timePickerMode, setTimePickerMode] = useState<"hour" | "minute">("hour")
@@ -91,22 +136,13 @@ export default function HabitModal({ onClose }: { onClose: () => void }) {
       savedTime = `${hh}:${mm}`
     }
 
-    const newHabit = {
-      id:
-        typeof crypto !== "undefined" && "randomUUID" in crypto
-          ? crypto.randomUUID()
-          : `${Date.now()}-${Math.random()}`,
+    const habitData = {
       name: habitName,
       time: savedTime,
       frequency: habitFrequency,
       days: finalDays,
       category: finalCategory,
       reminder: habitReminder,
-      completed: 0,
-      streak: 0,
-      lastCompletedDate: null,
-      weeklyCompleted: 0,
-      createdAt: new Date().toISOString(),
     }
 
     // Add the new category if needed
@@ -117,10 +153,29 @@ export default function HabitModal({ onClose }: { onClose: () => void }) {
     // Close the modal first to prevent DOM manipulation conflicts
     onClose()
 
-    // Add the habit after a small delay to ensure the modal is fully removed
+    // Save the habit after a small delay to ensure the modal is fully removed
     setTimeout(() => {
-      addHabit(newHabit as any)
-      toast({ title: "Habit added", description: `"${habitName}" has been created.` })
+      if (editId && existingHabit) {
+        editHabit(editId, { 
+          ...habitData, 
+          completed: existingHabit.completed, 
+          streak: existingHabit.streak, 
+          lastCompletedDate: existingHabit.lastCompletedDate,
+          weeklyCompleted: existingHabit.weeklyCompleted,
+          createdAt: existingHabit.createdAt
+        })
+        toast({ title: "Habit updated", description: `"${habitName}" has been updated.` })
+      } else {
+        addHabit({
+          ...habitData,
+          completed: 0,
+          streak: 0,
+          lastCompletedDate: null,
+          weeklyCompleted: 0,
+          createdAt: new Date().toISOString(),
+        })
+        toast({ title: "Habit added", description: `"${habitName}" has been created.` })
+      }
     }, 50)
   }
 
@@ -161,7 +216,7 @@ export default function HabitModal({ onClose }: { onClose: () => void }) {
     >
       <div className="modal" style={{ margin: "2rem auto", maxHeight: "calc(100vh - 4rem)" }}>
         <div className="modal-header">
-          <h2 className="modal-title">Add New Habit</h2>
+          <h2 className="modal-title">{editId ? "Edit Habit" : "Add New Habit"}</h2>
           <button className="modal-close" onClick={onClose}>
             &times;
           </button>

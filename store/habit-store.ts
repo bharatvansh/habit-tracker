@@ -27,6 +27,7 @@ interface HabitStore {
   isLoading: boolean
   loadHabits: () => void
   addHabit: (habit: Omit<Habit, "id">) => void
+  editHabit: (id: string, habit: Omit<Habit, "id">) => void
   markHabitComplete: (id: string) => void
   deleteHabit: (id: string) => void
   addCategory: (category: string) => void
@@ -57,6 +58,13 @@ export const useHabitStore = create<HabitStore>()(
           }
           const newHabits = [...state.habits, habitWithId]
           return { habits: newHabits }
+        })
+      },
+
+      editHabit: (id, habit) => {
+        set((state) => {
+          const habits = state.habits.map((h) => (h.id === id ? { ...h, ...habit, id } : h))
+          return { habits }
         })
       },
 

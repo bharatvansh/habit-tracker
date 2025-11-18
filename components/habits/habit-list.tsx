@@ -1,6 +1,7 @@
 "use client"
-import { useHabitStore } from "@/store/habit-store"
+import { useHabitStore, type Habit } from "@/store/habit-store"
 import { useState } from "react"
+import HabitModal from "./habit-modal"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -16,6 +17,7 @@ import { useToast } from "@/hooks/use-toast"
 export default function HabitList() {
   const { habits, markHabitComplete, deleteHabit, categories } = useHabitStore()
   const [habitToDelete, setHabitToDelete] = useState<string | null>(null)
+  const [habitToEdit, setHabitToEdit] = useState<Habit | null>(null)
   const [activeCategory, setActiveCategory] = useState("All Habits")
   const [searchTerm, setSearchTerm] = useState("")
   const { toast } = useToast()
@@ -25,9 +27,8 @@ export default function HabitList() {
     toast({ title: "Habit completed", description: `"${name}" marked complete for today.` })
   }
 
-  const handleEditHabit = (index: number) => {
-    // Edit functionality can be added later
-    alert(`Edit functionality for "${habits[index].name}" will be implemented soon.`)
+  const handleEditHabit = (habit: Habit) => {
+    setHabitToEdit(habit)
   }
 
   const handleDeleteConfirm = () => {
@@ -235,6 +236,7 @@ export default function HabitList() {
             </AlertDialogContent>
           </AlertDialog>
         )}
+        {habitToEdit && <HabitModal onClose={() => setHabitToEdit(null)} editId={habitToEdit.id} existingHabit={habitToEdit} />}
       </div>
     </div>
   )
