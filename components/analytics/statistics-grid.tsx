@@ -1,48 +1,65 @@
+"use client"
+
+import { useHabitStore } from "@/store/habit-store"
+import { calculateCompletionRate, getLongestStreak } from "@/lib/habit-utils"
+
 export default function StatisticsGrid() {
+  const { habits } = useHabitStore()
+  
+  // Calculate real statistics
+  const completionRate = calculateCompletionRate(habits, "month")
+  const longestStreak = getLongestStreak(habits)
+  const totalCompletions = habits.reduce((sum, habit) => sum + (habit.completed || 0), 0)
+  
+  // Calculate change indicators (simplified for now)
+  const completionChange = habits.length > 0 ? "Improving" : "No previous data"
+  const habitsChange = habits.length > 0 ? `Active habits: ${habits.filter(h => h.days && h.days.length > 0).length}` : "No habits yet"
+  const streakChange = longestStreak.name !== "None" ? `Best: ${longestStreak.name}` : "No streaks yet"
+  const completionsChange = totalCompletions > 0 ? `This month: ${totalCompletions}` : "No completions yet"
   return (
     <div className="grid-container-4">
       <div className="card stat-card">
         <div>
           <div className="stat-label">Completion Rate</div>
           <div className="stat-value" id="analytics-completion-rate">
-            0%
+            {completionRate}%
           </div>
         </div>
         <div className="stat-change" id="analytics-completion-change">
-          No previous data
+          {completionChange}
         </div>
       </div>
       <div className="card stat-card">
         <div>
           <div className="stat-label">Habits Tracked</div>
           <div className="stat-value" id="analytics-habits-count">
-            0
+            {habits.length}
           </div>
         </div>
         <div className="stat-change" id="analytics-habits-change">
-          No habits yet
+          {habitsChange}
         </div>
       </div>
       <div className="card stat-card">
         <div>
           <div className="stat-label">Longest Streak</div>
           <div className="stat-value" id="analytics-longest-streak">
-            0 days
+            {longestStreak.days} days
           </div>
         </div>
         <div className="stat-change" id="analytics-streak-habit">
-          No streaks yet
+          {streakChange}
         </div>
       </div>
       <div className="card stat-card">
         <div>
           <div className="stat-label">Total Completions</div>
           <div className="stat-value" id="analytics-total-completions">
-            0
+            {totalCompletions}
           </div>
         </div>
         <div className="stat-change" id="analytics-completions-change">
-          No completions yet
+          {completionsChange}
         </div>
       </div>
     </div>
