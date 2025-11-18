@@ -183,57 +183,7 @@ export default function ReminderModal({ onClose, editId, existingReminder }: Rem
         </div>
       </div>
 
-      <style jsx>{`
-        .styled-checkbox-container {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-        }
 
-        .styled-checkbox {
-          position: relative;
-          width: 24px;
-          height: 24px;
-          cursor: pointer;
-        }
-
-        .styled-checkbox input {
-          position: absolute;
-          opacity: 0;
-          width: 0;
-          height: 0;
-        }
-
-        .checkbox-visual {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 24px;
-          height: 24px;
-          background-color: var(--bg-tertiary);
-          border: 2px solid rgba(138, 43, 226, 0.5);
-          border-radius: 6px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          color: white;
-          cursor: pointer;
-          transition: all 0.2s ease;
-        }
-        
-        .styled-checkbox input:checked + .checkbox-visual {
-          background-color: var(--purple-primary);
-          border-color: var(--purple-primary);
-        }
-        
-        .styled-checkbox input:focus + .checkbox-visual {
-          box-shadow: 0 0 0 2px rgba(138, 43, 226, 0.3);
-        }
-        
-        .checkbox-visual i {
-          font-size: 14px;
-        }
-      `}</style>
     </>
   )
 }

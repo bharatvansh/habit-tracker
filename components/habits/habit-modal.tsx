@@ -74,6 +74,8 @@ export default function HabitModal({ onClose, editId, existingHabit }: HabitModa
   const [timePickerOpen, setTimePickerOpen] = useState(false)
   const [timePickerMode, setTimePickerMode] = useState<"hour" | "minute">("hour")
   const [amPm, setAmPm] = useState<"AM" | "PM" | null>(null)
+  const [frequencyDropdownOpen, setFrequencyDropdownOpen] = useState(false)
+  const [categoryDropdownOpen, setCategoryDropdownOpen] = useState(false)
 
   const handleDayChange = (day: string) => {
     setSelectedDays((prev) => ({
@@ -180,8 +182,8 @@ export default function HabitModal({ onClose, editId, existingHabit }: HabitModa
   }
 
   useEffect(() => {
-    if (timePickerOpen) {
-      const handleClickOutside = (event: MouseEvent) => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (timePickerOpen) {
         const timePickerElement = document.querySelector(".time-picker-dropdown")
         const timePickerInputElement = document.querySelector(".time-picker-input")
 
@@ -189,19 +191,49 @@ export default function HabitModal({ onClose, editId, existingHabit }: HabitModa
           timePickerElement &&
           timePickerInputElement &&
           !timePickerElement.contains(event.target as Node) &&
-          !timePickerInputElement.contains(event.target as Node) &&
           !timePickerInputElement.contains(event.target as Node)
         ) {
           setTimePickerOpen(false)
         }
       }
 
+      if (frequencyDropdownOpen) {
+        const dropdownElement = document.querySelector(".custom-dropdown .dropdown-menu")
+        const triggerElement = document.querySelector(".custom-dropdown .dropdown-trigger")
+        
+        if (
+          dropdownElement &&
+          triggerElement &&
+          !dropdownElement.contains(event.target as Node) &&
+          !triggerElement.contains(event.target as Node)
+        ) {
+          setFrequencyDropdownOpen(false)
+        }
+      }
+
+      if (categoryDropdownOpen) {
+        const dropdownElements = document.querySelectorAll(".custom-dropdown")
+        let clickedInside = false
+        
+        dropdownElements.forEach((element) => {
+          if (element.contains(event.target as Node)) {
+            clickedInside = true
+          }
+        })
+        
+        if (!clickedInside) {
+          setCategoryDropdownOpen(false)
+        }
+      }
+    }
+
+    if (timePickerOpen || frequencyDropdownOpen || categoryDropdownOpen) {
       document.addEventListener("mousedown", handleClickOutside)
       return () => {
         document.removeEventListener("mousedown", handleClickOutside)
       }
     }
-  }, [timePickerOpen])
+  }, [timePickerOpen, frequencyDropdownOpen, categoryDropdownOpen])
 
   return (
     <div
@@ -337,16 +369,16 @@ export default function HabitModal({ onClose, editId, existingHabit }: HabitModa
                         style={{
                           transform: `rotate(${
                             habitTime
-                              ? (Number.parseInt(habitTime.split(":")[0]) % 12) * 30 +
-                                Number.parseInt(habitTime.split(":")[1]) / 2
-                              : 0
+                              ? ((Number.parseInt(habitTime.split(":")[0]) % 12) * 30 +
+                                Number.parseInt(habitTime.split(":")[1]) / 2) - 90
+                              : -90
                           }deg)`,
                         }}
                       ></div>
                       <div
                         className="minute-hand"
                         style={{
-                          transform: `rotate(${habitTime ? Number.parseInt(habitTime.split(":")[1]) * 6 : 0}deg)`,
+                          transform: `rotate(${habitTime ? (Number.parseInt(habitTime.split(":")[1]) * 6) - 90 : -90}deg)`,
                         }}
                       ></div>
                     </div>
@@ -384,17 +416,31 @@ export default function HabitModal({ onClose, editId, existingHabit }: HabitModa
             <label className="form-label" htmlFor="habitFrequency">
               Frequency:
             </label>
-            <select
-              className="form-control form-select"
-              id="habitFrequency"
-              value={habitFrequency}
-              onChange={(e) => setHabitFrequency(e.target.value)}
-            >
-              <option value="daily">Daily</option>
-              <option value="mon-fri">Mon-Fri</option>
-              <option value="weekly">Weekly</option>
-              <option value="custom">Custom</option>
-            </select>
+            <div className="custom-dropdown">
+              <div
+                className="form-control dropdown-trigger"
+                onClick={() => setFrequencyDropdownOpen(!frequencyDropdownOpen)}
+              >
+                <span>{habitFrequency === "daily" ? "Daily" : habitFrequency === "mon-fri" ? "Mon-Fri" : habitFrequency === "weekly" ? "Weekly" : "Custom"}</span>
+                <i className="fa-solid fa-chevron-down" style={{ marginLeft: "auto", fontSize: "12px" }}></i>
+              </div>
+              {frequencyDropdownOpen && (
+                <div className="dropdown-menu">
+                  {["daily", "mon-fri", "weekly", "custom"].map((freq) => (
+                    <div
+                      key={freq}
+                      className={`dropdown-item ${habitFrequency === freq ? "active" : ""}`}
+                      onClick={() => {
+                        setHabitFrequency(freq)
+                        setFrequencyDropdownOpen(false)
+                      }}
+                    >
+                      {freq === "daily" ? "Daily" : freq === "mon-fri" ? "Mon-Fri" : freq === "weekly" ? "Weekly" : "Custom"}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
           {habitFrequency === "weekly" && (
@@ -475,19 +521,41 @@ export default function HabitModal({ onClose, editId, existingHabit }: HabitModa
               Category:
             </label>
             {!isAddingNewCategory ? (
-              <select
-                className="form-control form-select"
-                id="habitCategory"
-                value={habitCategory}
-                onChange={handleCategoryChange}
-              >
-                {categories.map((category) => (
-                  <option key={category} value={category}>
-                    {category}
-                  </option>
-                ))}
-                <option value="add_new_category">Add New Category</option>
-              </select>
+              <div className="custom-dropdown">
+                <div
+                  className="form-control dropdown-trigger"
+                  onClick={() => setCategoryDropdownOpen(!categoryDropdownOpen)}
+                >
+                  <span>{habitCategory || "Select category"}</span>
+                  <i className="fa-solid fa-chevron-down" style={{ marginLeft: "auto", fontSize: "12px" }}></i>
+                </div>
+                {categoryDropdownOpen && (
+                  <div className="dropdown-menu">
+                    {categories.map((category) => (
+                      <div
+                        key={category}
+                        className={`dropdown-item ${habitCategory === category ? "active" : ""}`}
+                        onClick={() => {
+                          setHabitCategory(category)
+                          setCategoryDropdownOpen(false)
+                        }}
+                      >
+                        {category}
+                      </div>
+                    ))}
+                    <div
+                      className="dropdown-item add-new"
+                      onClick={() => {
+                        setIsAddingNewCategory(true)
+                        setCategoryDropdownOpen(false)
+                      }}
+                    >
+                      <i className="fa-solid fa-plus" style={{ marginRight: "8px" }}></i>
+                      Add New Category
+                    </div>
+                  </div>
+                )}
+              </div>
             ) : (
               <input
                 className="form-control"
@@ -542,6 +610,75 @@ export default function HabitModal({ onClose, editId, existingHabit }: HabitModa
       </div>
 
       <style jsx>{`
+        .custom-dropdown {
+          position: relative;
+        }
+
+        .dropdown-trigger {
+          display: flex;
+          align-items: center;
+          cursor: pointer;
+          user-select: none;
+        }
+
+        .dropdown-trigger:hover {
+          border-color: rgba(138, 43, 226, 0.5);
+        }
+
+        .dropdown-menu {
+          position: absolute;
+          top: calc(100% + 5px);
+          left: 0;
+          right: 0;
+          background-color: var(--bg-secondary);
+          border: 1px solid rgba(138, 43, 226, 0.3);
+          border-radius: var(--border-radius);
+          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+          z-index: 100;
+          overflow: hidden;
+          animation: dropdownSlideIn 0.2s ease;
+        }
+
+        @keyframes dropdownSlideIn {
+          from {
+            opacity: 0;
+            transform: translateY(-10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        .dropdown-item {
+          padding: 12px 16px;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          color: var(--text-primary);
+          font-size: 0.95rem;
+        }
+
+        .dropdown-item:hover {
+          background-color: rgba(138, 43, 226, 0.15);
+        }
+
+        .dropdown-item.active {
+          background-color: var(--purple-primary);
+          color: white;
+          font-weight: 500;
+        }
+
+        .dropdown-item.add-new {
+          border-top: 1px solid rgba(255, 255, 255, 0.1);
+          color: var(--purple-light);
+          display: flex;
+          align-items: center;
+        }
+
+        .dropdown-item.add-new:hover {
+          background-color: rgba(138, 43, 226, 0.2);
+        }
+
         .custom-time-picker {
           position: relative;
         }
@@ -660,19 +797,29 @@ export default function HabitModal({ onClose, editId, existingHabit }: HabitModa
         }
         
         .hour-hand {
-          width: 45px; // Reduced from 55px
-          height: 3px; // Reduced from 4px
-          margin-top: -1.5px; // Adjusted for new height
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          width: 45px;
+          height: 3px;
+          margin-top: -1.5px;
           background-color: var(--purple-primary);
           border-radius: 4px;
+          transform-origin: left center;
+          z-index: 2;
         }
         
         .minute-hand {
-          width: 60px; // Reduced from 70px
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          width: 60px;
           height: 2px;
           margin-top: -1px;
           background-color: var(--purple-light);
           border-radius: 2px;
+          transform-origin: left center;
+          z-index: 1;
         }
         
         @media (max-width: 480px) {
@@ -686,11 +833,11 @@ export default function HabitModal({ onClose, editId, existingHabit }: HabitModa
           }
           
           .hour-hand {
-            width: 50px;
+            width: 55px;
           }
           
           .minute-hand {
-            width: 70px;
+            width: 75px;
           }
         }
       `}</style>
@@ -714,96 +861,7 @@ export default function HabitModal({ onClose, editId, existingHabit }: HabitModa
           background: var(--purple-light);
         }
       `}</style>
-      <style jsx>{`
-        .styled-checkbox-container {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-        }
-        
-        .styled-checkbox, .styled-radio {
-          position: relative;
-          width: 24px;
-          height: 24px;
-          cursor: pointer;
-        }
-        
-        .styled-checkbox input, .styled-radio input {
-          position: absolute;
-          opacity: 0;
-          width: 0;
-          height: 0;
-        }
-        
-        .checkbox-visual {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 24px;
-          height: 24px;
-          background-color: var(--bg-tertiary);
-          border: 2px solid rgba(138, 43, 226, 0.5);
-          border-radius: 6px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          color: white;
-          cursor: pointer;
-          transition: all 0.2s ease;
-        }
-        
-        .radio-visual {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 24px;
-          height: 24px;
-          background-color: var(--bg-tertiary);
-          border: 2px solid rgba(138, 43, 226, 0.5);
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          cursor: pointer;
-          transition: all 0.2s ease;
-        }
-        
-        .styled-checkbox input:checked + .checkbox-visual {
-          background-color: var(--purple-primary);
-          border-color: var(--purple-primary);
-        }
-        
-        .styled-radio input:checked + .radio-visual {
-          border-color: var(--purple-primary);
-        }
-        
-        .styled-checkbox input:focus + .checkbox-visual,
-        .styled-radio input:focus + .radio-visual {
-          box-shadow: 0 0 0 2px rgba(138, 43, 226, 0.3);
-        }
-        
-        .checkbox-visual i {
-          font-size: 14px;
-        }
-        
-        .radio-dot {
-          width: 12px;
-          height: 12px;
-          background-color: var(--purple-primary);
-          border-radius: 50%;
-        }
-        
-        .styled-day-checkbox {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          margin-bottom: 10px;
-        }
-        
-        .styled-day-checkbox label {
-          margin-bottom: 0;
-        }
-      `}</style>
+
     </div>
   )
 }
