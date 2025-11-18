@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, ScrollView } from 'react-native';
 import { useHabitStore } from '../../store/habit-store';
 import { useReminderStore } from '../../store/reminder-store';
 import HomeHeader from '../../components/home/home-header';
+import MotivationalInsights from '../../components/home/motivational-insights';
 import StatCards from '../../components/home/stat-cards';
 import WeeklyView from '../../components/home/weekly-view';
 import UpcomingList from '../../components/home/upcoming-list';
-import DailyGoal from '../../components/home/DailyGoal';
-import DNAPreview from '../../components/home/DNAPreview';
 
 export default function HomePage() {
   const { loadHabits, isLoading: habitsLoading } = useHabitStore();
@@ -43,10 +42,13 @@ export default function HomePage() {
   }
 
   return (
-    <View style={styles.container}>
+    <ScrollView 
+      style={styles.container}
+      contentContainerStyle={styles.contentContainer}
+      showsVerticalScrollIndicator={false}
+    >
       <HomeHeader />
-      <DailyGoal />
-      <DNAPreview />
+      <MotivationalInsights />
       <StatCards />
 
       <View style={styles.sectionHeader}>
@@ -59,7 +61,7 @@ export default function HomePage() {
         <Text style={styles.sectionLink}>Habits & Reminders</Text>
       </View>
       <UpcomingList />
-    </View>
+    </ScrollView>
   );
 }
 
@@ -67,7 +69,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#121212',
-    padding: 16,
+  },
+  contentContainer: {
+    padding: 20,
+    paddingBottom: 40,
   },
   loadingContainer: {
     flex: 1,
@@ -90,7 +95,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 16,
-    marginTop: 8,
+    marginTop: 28,
+    paddingTop: 4,
   },
   sectionTitle: {
     fontSize: 18,
@@ -99,7 +105,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.3,
   },
   sectionLink: {
-    fontSize: 13,
+    fontSize: 12,
     color: '#888888',
     fontWeight: '500',
   },

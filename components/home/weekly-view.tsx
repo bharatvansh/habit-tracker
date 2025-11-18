@@ -96,6 +96,8 @@ export default function WeeklyView() {
                 {day.habits.map((habit, habitIndex) => (
                   <View
                     key={habitIndex}
+                    // @ts-ignore - className works on web
+                    className="dayHabit"
                     style={[
                       styles.dayHabit,
                       habit.completed && styles.completedHabit
@@ -130,12 +132,17 @@ export default function WeeklyView() {
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: 24,
+    marginBottom: 16,
+    backgroundColor: '#1a1a1a',
+    borderRadius: 16,
+    padding: 18,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.06)',
   },
   daysRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 20,
+    marginBottom: 18,
     paddingHorizontal: 4,
   },
   separator: {
@@ -160,16 +167,16 @@ const styles = StyleSheet.create({
     marginRight: 0,
   },
   dayName: {
-    fontSize: 12,
+    fontSize: 11,
     color: '#999999',
-    marginBottom: 12,
+    marginBottom: 10,
     fontWeight: '500',
   },
   dayDate: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: '#1a1a1a',
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: '#252525',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -177,7 +184,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#8a2be2',
   },
   dayDateText: {
-    fontSize: 18,
+    fontSize: 16,
     color: '#ffffff',
     fontWeight: '600',
   },
@@ -190,12 +197,14 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   dayHabit: {
-    backgroundColor: '#1a1a1a',
+    backgroundColor: '#252525',
     borderRadius: 12,
     paddingVertical: 10,
     paddingHorizontal: 8,
     minHeight: 44,
     justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.08)',
   },
   completedHabit: {
     backgroundColor: 'rgba(76, 175, 80, 0.15)',
@@ -215,7 +224,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 60,
+    paddingVertical: 48,
     paddingHorizontal: 24,
   },
   noHabitsIcon: {

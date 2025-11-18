@@ -120,7 +120,12 @@ export default function UpcomingList({ showHeader = false }: { showHeader?: bool
   return (
     <View>
       {upcomingItems.map((item, index) => (
-        <View key={`${item.type}-${item.id}-${index}`} style={styles.upcomingItem}>
+        <View 
+          key={`${item.type}-${item.id}-${index}`} 
+          // @ts-ignore - className works on web
+          className="upcomingItem"
+          style={styles.upcomingItem}
+        >
           <View style={styles.upcomingTime}>
             <Text style={styles.hour}>
               {item.hour}:{item.minute}
@@ -181,10 +186,12 @@ const styles = StyleSheet.create({
   upcomingItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#1e1e1e',
-    borderRadius: 12,
+    backgroundColor: '#1a1a1a',
+    borderRadius: 14,
     padding: 16,
     marginBottom: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.06)',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
@@ -259,6 +266,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 48,
     width: '100%',
+    backgroundColor: '#1a1a1a',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.06)',
   },
   noItemsIcon: {
     marginBottom: 20,
