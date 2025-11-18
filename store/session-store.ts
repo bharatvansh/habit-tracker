@@ -1,8 +1,8 @@
 "use client"
 
 import { create } from "zustand"
-import { persist, createJSONStorage } from "zustand/middleware"
-import AsyncStorage from "@react-native-async-storage/async-storage"
+import { persist } from "zustand/middleware"
+import { createUniversalStorage } from "../lib/storage-adapter"
 
 export interface AppSession {
   openedAt: string
@@ -75,7 +75,7 @@ export const useSessionStore = create<SessionStore>()(
     }),
     {
       name: "session-storage",
-      storage: createJSONStorage(() => AsyncStorage),
+      storage: createUniversalStorage(),
     },
   ),
 )

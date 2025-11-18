@@ -6,6 +6,7 @@ import { PaperProvider } from 'react-native-paper';
 import { ProfileProvider } from '../hooks/use-profile';
 import { WeeklyResetHandler } from '../components/weekly-reset-handler';
 import { SessionTracker } from '../components/session-tracker';
+import { WebErrorBoundary } from '../components/web-error-boundary';
 import * as Notifications from 'expo-notifications';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
@@ -39,21 +40,23 @@ export default function RootLayout() {
   }
 
   return (
-    <ProfileProvider>
-      <PaperProvider>
-        <SafeAreaProvider>
-          <Stack
-            screenOptions={{
-              headerShown: false,
-            }}
-          >
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          </Stack>
-          <StatusBar style="light" />
-          <WeeklyResetHandler />
-          <SessionTracker />
-        </SafeAreaProvider>
-      </PaperProvider>
-    </ProfileProvider>
+    <WebErrorBoundary>
+      <ProfileProvider>
+        <PaperProvider>
+          <SafeAreaProvider>
+            <Stack
+              screenOptions={{
+                headerShown: false,
+              }}
+            >
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            </Stack>
+            <StatusBar style="light" />
+            <WeeklyResetHandler />
+            <SessionTracker />
+          </SafeAreaProvider>
+        </PaperProvider>
+      </ProfileProvider>
+    </WebErrorBoundary>
   );
 }

@@ -1,0 +1,25 @@
+# Robots.txt for Habitual App
+User-agent: *
+Allow: /
+
+# Sitemaps
+Sitemap: https://habitual.app/sitemap.xml
+
+# Disallow private/admin areas
+Disallow: /api/
+Disallow: /admin/
+Disallow: /_next/
+Disallow: /private/
+
+# Allow bots to crawl
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+# Crawl delay (optional, adjust as needed)
+Crawl-delay: 1

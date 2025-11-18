@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes, viewport-fit=cover" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  
+  <!-- Primary Meta Tags -->
+  <title>Habitual - Habit & Reminder Tracker with DNA™ Visualization</title>
+  <meta name="title" content="Habitual - Habit & Reminder Tracker with DNA™ Visualization" />
+  <meta name="description" content="Track your habits, set smart reminders, and visualize your unique Habit DNA™. Build better routines with streaks, analytics, and personalized insights." />
+  <meta name="keywords" content="habit tracker, reminder app, habit DNA, productivity, streaks, analytics, personal development, routine builder" />
+  <meta name="author" content="Habitual Team" />
+  
+  <!-- Theme and App Identity -->
+  <meta name="theme-color" content="#8a2be2" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#8a2be2" media="(prefers-color-scheme: light)" />
+  <meta name="color-scheme" content="dark light" />
+  <meta name="application-name" content="Habitual" />
+  <meta name="apple-mobile-web-app-title" content="Habitual" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://habitual.app/" />
+  <meta property="og:title" content="Habitual - Habit & Reminder Tracker with DNA™ Visualization" />
+  <meta property="og:description" content="Track your habits, set smart reminders, and visualize your unique Habit DNA™. Build better routines with streaks, analytics, and personalized insights." />
+  <meta property="og:image" content="https://habitual.app/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:site_name" content="Habitual" />
+  <meta property="og:locale" content="en_US" />
+  
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:url" content="https://habitual.app/" />
+  <meta name="twitter:title" content="Habitual - Habit & Reminder Tracker with DNA™ Visualization" />
+  <meta name="twitter:description" content="Track your habits, set smart reminders, and visualize your unique Habit DNA™. Build better routines with streaks, analytics, and personalized insights." />
+  <meta name="twitter:image" content="https://habitual.app/twitter-image.png" />
+  <meta name="twitter:creator" content="@habitualapp" />
+  
+  <!-- Security Headers (Meta) -->
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta http-equiv="X-Frame-Options" content="SAMEORIGIN" />
+  <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
+  <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
+  <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=()" />
+  
+  <!-- Content Security Policy -->
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self';
+    script-src 'self' 'unsafe-inline' 'unsafe-eval';
+    style-src 'self' 'unsafe-inline';
+    img-src 'self' data: blob: https:;
+    font-src 'self' data:;
+    connect-src 'self' https://api.habitual.app ws: wss:;
+    media-src 'self' blob:;
+    object-src 'none';
+    base-uri 'self';
+    form-action 'self';
+    frame-ancestors 'self';
+    upgrade-insecure-requests;
+  " />
+  
+  <!-- Icons and Favicons -->
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#8a2be2" />
+  
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="/manifest.json" />
+  
+  <!-- Preconnect to external domains -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+  <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+  
+  <!-- Preload critical resources -->
+  <link rel="preload" href="/global.css" as="style" />
+  
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="/global.css" />
+  
+  <!-- Microsoft Tile -->
+  <meta name="msapplication-TileColor" content="#8a2be2" />
+  <meta name="msapplication-config" content="/browserconfig.xml" />
+  
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Habitual",
+    "description": "Track your habits, set smart reminders, and visualize your unique Habit DNA™",
+    "url": "https://habitual.app",
+    "applicationCategory": "ProductivityApplication",
+    "operatingSystem": "Web, iOS, Android, Windows",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.8",
+      "ratingCount": "1250"
+    }
+  }
+  </script>
+</head>
+<body>
+  <!-- App Container -->
+  <div id="root"></div>
+  
+  <!-- Noscript fallback -->
+  <noscript>
+    <div style="text-align: center; padding: 50px; font-family: sans-serif; background: #121212; color: #fff; min-height: 100vh;">
+      <h1>JavaScript Required</h1>
+      <p>Habitual requires JavaScript to be enabled. Please enable JavaScript in your browser settings.</p>
+    </div>
+  </noscript>
+  
+  <!-- Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/service-worker.js')
+          .then((registration) => {
+            console.log('Service Worker registered:', registration.scope);
+            
+            // Check for updates
+            registration.addEventListener('updatefound', () => {
+              const newWorker = registration.installing;
+              newWorker.addEventListener('statechange', () => {
+                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                  // New service worker available, prompt user to refresh
+                  if (confirm('New version available! Refresh to update?')) {
+                    newWorker.postMessage({ type: 'SKIP_WAITING' });
+                    window.location.reload();
+                  }
+                }
+              });
+            });
+          })
+          .catch((error) => {
+            console.error('Service Worker registration failed:', error);
+          });
+      });
+      
+      // Handle service worker updates
+      let refreshing = false;
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (!refreshing) {
+          refreshing = true;
+          window.location.reload();
+        }
+      });
+    }
+  </script>
+  
+  <!-- PWA Install Prompt -->
+  <script>
+    let deferredPrompt;
+    
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      
+      // Store for later use
+      window.deferredPrompt = deferredPrompt;
+    });
+    
+    window.addEventListener('appinstalled', () => {
+      console.log('PWA installed successfully');
+      deferredPrompt = null;
+    });
+  </script>
+  
+  <!-- Performance monitoring -->
+  <script>
+    if ('PerformanceObserver' in window) {
+      // Monitor Largest Contentful Paint
+      new PerformanceObserver((list) => {
+        const entries = list.getEntries();
+        const lastEntry = entries[entries.length - 1];
+        console.log('LCP:', lastEntry.renderTime || lastEntry.loadTime);
+      }).observe({ entryTypes: ['largest-contentful-paint'] });
+      
+      // Monitor First Input Delay
+      new PerformanceObserver((list) => {
+        const entries = list.getEntries();
+        entries.forEach((entry) => {
+          console.log('FID:', entry.processingStart - entry.startTime);
+        });
+      }).observe({ entryTypes: ['first-input'] });
+      
+      // Monitor Cumulative Layout Shift
+      let clsValue = 0;
+      new PerformanceObserver((list) => {
+        for (const entry of list.getEntries()) {
+          if (!entry.hadRecentInput) {
+            clsValue += entry.value;
+            console.log('CLS:', clsValue);
+          }
+        }
+      }).observe({ entryTypes: ['layout-shift'] });
+    }
+  </script>
+</body>
+</html>

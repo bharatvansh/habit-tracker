@@ -1,0 +1,11 @@
+# Netlify redirects for SPA routing
+# This ensures all routes are handled by the React app
+
+# API redirects (if needed)
+/api/*  https://api.habitual.app/:splat  200
+
+# Redirect all other requests to index.html for client-side routing
+/*    /index.html   200
+
+# Optional: Redirect old URLs or handle specific cases
+# /old-path  /new-path  301

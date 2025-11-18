@@ -1,8 +1,8 @@
 "use client"
 
 import { create } from "zustand"
-import { persist, createJSONStorage } from "zustand/middleware"
-import AsyncStorage from "@react-native-async-storage/async-storage"
+import { persist } from "zustand/middleware"
+import { createUniversalStorage } from "../lib/storage-adapter"
 import { updateWidgetData } from "../lib/widget-data"
 
 export interface Habit {
@@ -189,7 +189,7 @@ export const useHabitStore = create<HabitStore>()(
     }),
     {
       name: "habit-storage",
-      storage: createJSONStorage(() => AsyncStorage),
+      storage: createUniversalStorage(),
       onRehydrateStorage: () => (state) => {
         state?.isLoading !== undefined && (state.isLoading = false)
       },

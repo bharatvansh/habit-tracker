@@ -66,7 +66,8 @@
     "babel-plugin-module-resolver": "^5.0.2",
     "nativewind": "^2.0.11",
     "tailwindcss": "3.3.2",
-    "typescript": "~5.3.3"
+    "typescript": "~5.3.3",
+    "compression-webpack-plugin": "^11.1.0"
   },
   "private": true,
   "expo": {
@@ -96,8 +97,30 @@
       "package": "com.habitual.app"
     },
     "web": {
-      "favicon": "./assets/favicon.png",
-      "bundler": "metro"
+      "favicon": "./public/favicon-32x32.png",
+      "bundler": "webpack",
+      "name": "Habitual - Habit Tracker",
+      "shortName": "Habitual",
+      "description": "Track habits, set reminders, visualize your Habit DNA™",
+      "lang": "en",
+      "scope": "/",
+      "startUrl": "/",
+      "backgroundColor": "#121212",
+      "themeColor": "#8a2be2",
+      "display": "standalone",
+      "orientation": "portrait",
+      "dir": "ltr",
+      "preferRelatedApplications": false,
+      "dangerous": {
+        "noServiceWorker": false
+      },
+      "build": {
+        "babel": {
+          "include": [
+            "@expo/vector-icons"
+          ]
+        }
+      }
     },
     "windows": {
       "package": "com.habitual.app"
