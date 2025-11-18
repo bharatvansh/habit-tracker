@@ -81,6 +81,7 @@ body {
   cursor: pointer;
   transition: var(--transition);
   position: relative;
+  text-decoration: none;
 }
 
 .nav-item.active {
@@ -1581,7 +1582,7 @@ tr:hover td {
   gap: 0.5rem;
   margin-top: 0.75rem;
   color: var(--text-secondary);
-  text-decoration: none;
+  text-decoration: none !important;
   font-size: 0.9rem;
   transition: var(--transition);
 }
