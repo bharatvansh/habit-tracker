@@ -25,7 +25,7 @@ export function calculateCompletionRate(habits: Habit[], timeframe: "today" | "w
 
   if (timeframe === "week") {
     // Calculate for the current week
-    const totalWeeklyPossible = habits.reduce((sum, habit) => sum + (habit.days?.length || 7), 0)
+    const totalWeeklyPossible = habits.reduce((sum, habit) => sum + (habit.days?.length ?? 7), 0)
     const totalWeeklyCompleted = habits.reduce((sum, habit) => sum + (habit.weeklyCompleted || 0), 0)
 
     return totalWeeklyPossible > 0 ? Math.round((totalWeeklyCompleted / totalWeeklyPossible) * 100) : 0
@@ -39,7 +39,7 @@ export function calculateCompletionRate(habits: Habit[], timeframe: "today" | "w
 
   habits.forEach((habit) => {
     // Calculate how many times this habit should be completed in a month
-    const daysPerWeek = habit.days?.length || 7
+    const daysPerWeek = habit.days?.length ?? 7
     const expectedCompletionsPerMonth = Math.round((daysPerWeek / 7) * daysInMonth)
     totalPossibleCompletions += expectedCompletionsPerMonth
 
