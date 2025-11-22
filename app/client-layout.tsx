@@ -7,6 +7,7 @@ import Sidebar from "@/components/layout/sidebar"
 import { useHabitStore } from "@/store/habit-store"
 import { Toaster } from "@/components/ui/toaster"
 import { ProfileProvider } from "@/hooks/use-profile"
+import { ThemeProvider } from "@/components/theme-provider"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -45,16 +46,23 @@ export default function ClientLayout({
         <script src="https://cdn.jsdelivr.net/npm/chart.js" async></script>
       </head>
       <body className={inter.className}>
-        <ProfileProvider>
-          <div className="app-container">
-            <Sidebar />
-            <div className="main-content">
-              <WeeklyResetHandler />
-              {children}
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <ProfileProvider>
+            <div className="app-container">
+              <Sidebar />
+              <div className="main-content">
+                <WeeklyResetHandler />
+                {children}
+              </div>
             </div>
-          </div>
-          <Toaster />
-        </ProfileProvider>
+            <Toaster />
+          </ProfileProvider>
+        </ThemeProvider>
       </body>
     </html>
   )

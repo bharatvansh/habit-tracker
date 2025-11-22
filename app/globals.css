@@ -1,4 +1,25 @@
 :root {
+  /* Light Mode Colors */
+  --bg-primary: #f8f9fa;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #e9ecef;
+  --purple-primary: #8a2be2;
+  --purple-light: #9b4ee3;
+  --purple-dark: #6a1cb0;
+  --text-primary: #212529;
+  --text-secondary: #6c757d;
+  --success: #28a745;
+  --warning: #ffc107;
+  --danger: #dc3545;
+  --info: #17a2b8;
+  --border-radius: 12px;
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --transition: all 0.3s ease;
+  --border-color: rgba(0, 0, 0, 0.1);
+}
+
+.dark {
+  /* Dark Mode Colors (Original) */
   --bg-primary: #121212;
   --bg-secondary: #1e1e1e;
   --bg-tertiary: #252525;
@@ -14,6 +35,7 @@
   --border-radius: 12px;
   --shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   --transition: all 0.3s ease;
+  --border-color: rgba(255, 255, 255, 0.1);
 }
 
 * {
@@ -28,6 +50,7 @@ body {
   color: var(--text-primary);
   min-height: 100vh;
   overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .app-container {
@@ -115,6 +138,8 @@ body {
   margin-left: 250px; /* Same as sidebar width */
   min-height: 100vh;
   width: calc(100% - 250px);
+  background-color: var(--bg-primary);
+  transition: background-color 0.3s ease;
 }
 
 .tab-content {
@@ -178,10 +203,14 @@ body {
   box-shadow: var(--shadow);
   transition: var(--transition);
   position: relative;
+  color: var(--text-primary);
 }
 
 .card:hover {
   transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+.dark .card:hover {
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
 }
 
@@ -230,7 +259,7 @@ body {
 
 .action-btn:hover {
   color: var(--text-primary);
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(128, 128, 128, 0.1);
 }
 
 /* Stats Cards */
@@ -266,8 +295,12 @@ body {
 
 .progress-circle-bg {
   fill: none;
-  stroke: rgba(255, 255, 255, 0.1);
+  stroke: rgba(128, 128, 128, 0.1);
   stroke-width: 8;
+}
+
+.dark .progress-circle-bg {
+  stroke: rgba(255, 255, 255, 0.1);
 }
 
 .progress-circle-value {
@@ -297,10 +330,14 @@ body {
 
 .progress-bar {
   height: 8px;
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(128, 128, 128, 0.1);
   border-radius: 4px;
   overflow: hidden;
   margin: 0.5rem 0 1rem;
+}
+
+.dark .progress-bar {
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 .progress-bar-value {
@@ -330,11 +367,11 @@ thead th {
 
 tbody td {
   padding: 1rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid var(--border-color);
 }
 
 tr:hover td {
-  background-color: rgba(255, 255, 255, 0.02);
+  background-color: rgba(128, 128, 128, 0.05);
 }
 
 /* Tags */
@@ -345,7 +382,7 @@ tr:hover td {
   font-size: 0.75rem;
   margin-right: 0.5rem;
   background-color: rgba(138, 43, 226, 0.2);
-  color: var(--purple-light);
+  color: var(--purple-primary);
 }
 
 /* Status Indicators */
@@ -410,11 +447,12 @@ tr:hover td {
   max-height: calc(100vh - 4rem);
   display: flex;
   flex-direction: column;
+  color: var(--text-primary);
 }
 
 .modal-header {
   padding: 1.5rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid var(--border-color);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -458,7 +496,7 @@ tr:hover td {
   width: 100%;
   padding: 0.75rem 1rem;
   background-color: var(--bg-tertiary);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-color);
   border-radius: var(--border-radius);
   color: var(--text-primary);
   transition: var(--transition);
@@ -478,6 +516,7 @@ tr:hover td {
   padding-right: 2.5rem;
   cursor: pointer;
 }
+/* Adjust form select arrow for light mode if needed, but grey is fine */
 
 .form-select:hover {
   border-color: rgba(138, 43, 226, 0.5);
@@ -519,7 +558,7 @@ tr:hover td {
 
 .modal-footer {
   padding: 1rem 1.5rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-top: 1px solid var(--border-color);
   display: flex;
   justify-content: flex-end;
   gap: 1rem;
@@ -528,7 +567,7 @@ tr:hover td {
 .btn-cancel {
   background-color: transparent;
   color: var(--text-secondary);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-color);
   padding: 0.5rem 1rem;
   border-radius: var(--border-radius);
   cursor: pointer;
@@ -536,7 +575,7 @@ tr:hover td {
 }
 
 .btn-cancel:hover {
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: rgba(128, 128, 128, 0.05);
   color: var(--text-primary);
 }
 
@@ -564,6 +603,7 @@ tr:hover td {
   background-color: var(--bg-secondary);
   margin-bottom: 1rem;
   transition: var(--transition);
+  color: var(--text-primary);
 }
 
 .upcoming-item:hover {
@@ -628,6 +668,7 @@ tr:hover td {
 
 .habit-group.active {
   background-color: var(--purple-primary);
+  color: white;
 }
 
 .habit-group:hover {
@@ -682,6 +723,7 @@ tr:hover td {
 
 .day-date.today {
   background-color: var(--purple-primary);
+  color: white;
 }
 
 .day-habits {
@@ -748,20 +790,21 @@ tr:hover td {
 }
 
 /* Analytics Dashboard Styles */
+/* Refactored to use CSS variables where possible */
 #analytics-dashboard {
-  /* Scoped dashboard variables */
-  --primary: #8a2be2;
-  --primary-light: #9d50ea;
-  --primary-dark: #6a0dad;
-  --bg-dark: #121212;
-  --bg-card: #1e1e1e;
-  --text: #e0e0e0;
-  --text-secondary: #aaaaaa;
-  --success: #4caf50;
-  --warning: #ffc107;
-  --danger: #f44336;
+  /* Scoped dashboard variables mapped to root vars */
+  --primary: var(--purple-primary);
+  --primary-light: var(--purple-light);
+  --primary-dark: var(--purple-dark);
+  --bg-dark: var(--bg-primary); /* Used as background */
+  --bg-card: var(--bg-secondary);
+  --text: var(--text-primary);
+  --text-secondary: var(--text-secondary);
+  --success: var(--success);
+  --warning: var(--warning);
+  --danger: var(--danger);
   --border-radius: 12px;
-  --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  --card-shadow: var(--shadow);
   padding: 30px;
 }
 
@@ -782,6 +825,7 @@ tr:hover td {
 #analytics-dashboard .page-title {
   font-size: 28px;
   font-weight: 700;
+  color: var(--text-primary);
 }
 
 #analytics-dashboard .date-filter {
@@ -793,7 +837,7 @@ tr:hover td {
 #analytics-dashboard .date-filter select {
   background-color: var(--bg-card);
   color: var(--text);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-color);
   padding: 10px 15px;
   border-radius: var(--border-radius);
   outline: none;
@@ -831,6 +875,7 @@ tr:hover td {
 #analytics-dashboard .card-title {
   font-size: 18px;
   font-weight: 600;
+  color: var(--text-primary);
 }
 
 #analytics-dashboard .stat-card {
@@ -844,6 +889,7 @@ tr:hover td {
   font-size: 32px;
   font-weight: 700;
   margin-top: 15px;
+  color: var(--text-primary);
 }
 
 #analytics-dashboard .stat-label {
@@ -900,8 +946,12 @@ tr:hover td {
 }
 
 #analytics-dashboard .progress-circle .bg {
+  stroke: rgba(128, 128, 128, 0.1);
+}
+.dark #analytics-dashboard .progress-circle .bg {
   stroke: rgba(255, 255, 255, 0.05);
 }
+
 
 #analytics-dashboard .progress-circle .progress {
   stroke: var(--primary);
@@ -920,6 +970,7 @@ tr:hover td {
 #analytics-dashboard .progress-value {
   font-size: 32px;
   font-weight: 700;
+  color: var(--text-primary);
 }
 
 #analytics-dashboard .progress-label {
@@ -1021,7 +1072,7 @@ tr:hover td {
   justify-content: space-between;
   align-items: center;
   padding: 15px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid var(--border-color);
 }
 
 #analytics-dashboard .habit-row:last-child {
@@ -1030,12 +1081,13 @@ tr:hover td {
 
 #analytics-dashboard .habit-name {
   font-weight: 500;
+  color: var(--text-primary);
 }
 
 #analytics-dashboard .habit-category {
   font-size: 12px;
   color: var(--text-secondary);
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: rgba(128, 128, 128, 0.1);
   padding: 4px 8px;
   border-radius: 4px;
   margin-left: 8px;
@@ -1050,14 +1102,18 @@ tr:hover td {
 #analytics-dashboard .habit-streak {
   font-size: 14px;
   font-weight: 600;
+  color: var(--text-primary);
 }
 
 #analytics-dashboard .habit-progress {
   width: 100px;
   height: 8px;
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: rgba(128, 128, 128, 0.1);
   border-radius: 4px;
   overflow: hidden;
+}
+.dark #analytics-dashboard .habit-progress {
+  background-color: rgba(255, 255, 255, 0.05);
 }
 
 #analytics-dashboard .habit-progress-bar {
@@ -1100,6 +1156,9 @@ tr:hover td {
 
 .summary-card:hover {
   transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+.dark .summary-card:hover {
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
 }
 
@@ -1132,6 +1191,7 @@ tr:hover td {
   font-size: 28px;
   font-weight: 700;
   margin-bottom: 5px;
+  color: var(--text-primary);
 }
 
 .summary-subtitle {
@@ -1168,6 +1228,9 @@ tr:hover td {
 }
 
 .progress-bg {
+  stroke: rgba(128, 128, 128, 0.1);
+}
+.dark .progress-bg {
   stroke: rgba(255, 255, 255, 0.05);
 }
 
@@ -1191,6 +1254,7 @@ tr:hover td {
   margin: 0;
   padding: 0;
   line-height: 1;
+  color: var(--text-primary);
 }
 
 .habit-categories {
@@ -1237,7 +1301,7 @@ tr:hover td {
   width: 100%;
   padding: 12px 15px 12px 45px;
   background-color: var(--bg-secondary);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-color);
   border-radius: var(--border-radius);
   color: var(--text-primary);
 }
@@ -1263,6 +1327,7 @@ tr:hover td {
 .page-title {
   font-size: 24px;
   font-weight: 700;
+  color: var(--text-primary);
 }
 
 .header-actions {
@@ -1295,11 +1360,11 @@ tr:hover td {
 .btn-outline {
   background-color: transparent;
   color: var(--text-secondary);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-color);
 }
 
 .btn-outline:hover {
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: rgba(128, 128, 128, 0.05);
   color: var(--text-primary);
 }
 
@@ -1323,6 +1388,9 @@ tr:hover td {
 
 .reminder-card:hover {
   transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+.dark .reminder-card:hover {
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
 }
 
@@ -1331,7 +1399,7 @@ tr:hover td {
   justify-content: space-between;
   align-items: center;
   padding-bottom: 12px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .reminder-date {
@@ -1351,6 +1419,7 @@ tr:hover td {
 .reminder-date-number {
   font-size: 1.2rem;
   font-weight: 700;
+  color: var(--text-primary);
 }
 
 .reminder-month {
@@ -1381,6 +1450,7 @@ tr:hover td {
   font-size: 1.1rem;
   font-weight: 600;
   margin-bottom: 10px;
+  color: var(--text-primary);
 }
 
 .reminder-category {
@@ -1393,7 +1463,7 @@ tr:hover td {
   justify-content: space-between;
   align-items: center;
   padding-top: 12px;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-top: 1px solid var(--border-color);
 }
 
 .reminder-indicators {
@@ -1495,6 +1565,9 @@ tr:hover td {
 
 .card:hover {
   transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+.dark .card:hover {
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
 }
 
@@ -1521,7 +1594,7 @@ tr:hover td {
 
 .action-btn:hover {
   color: var(--text-primary);
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(128, 128, 128, 0.1);
 }
 
 .mark-complete-btn:hover {
@@ -1537,7 +1610,7 @@ tr:hover td {
 /* Profile Section Styles */
 .profile-section {
   padding: 1rem 1.5rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-top: 1px solid var(--border-color);
   background-color: transparent;
 }
 
@@ -1586,6 +1659,7 @@ tr:hover td {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  color: var(--text-primary);
 }
 
 .profile-email {
@@ -1762,11 +1836,11 @@ tr:hover td {
 .btn-outline {
   background-color: transparent;
   color: var(--text-primary);
-  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.2));
+  border: 1px solid var(--border-color);
 }
 
 .btn-outline:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(128, 128, 128, 0.1);
 }
 
 .btn-cancel {
@@ -1961,7 +2035,7 @@ tr:hover td {
 .form-control {
   width: 100%;
   padding: 0.75rem;
-  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.2));
+  border: 1px solid var(--border-color);
   border-radius: var(--border-radius);
   background-color: var(--bg-tertiary);
   color: var(--text-primary);
@@ -2039,7 +2113,7 @@ tr:hover td {
   justify-content: space-between;
   align-items: center;
   padding: 1.5rem;
-  border-bottom: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+  border-bottom: 1px solid var(--border-color);
 }
 
 .modal-title {
@@ -2062,7 +2136,7 @@ tr:hover td {
 
 .modal-close:hover {
   color: var(--text-primary);
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(128, 128, 128, 0.1);
 }
 
 .modal-body {
@@ -2074,7 +2148,7 @@ tr:hover td {
   justify-content: flex-end;
   gap: 0.75rem;
   padding: 1.5rem;
-  border-top: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+  border-top: 1px solid var(--border-color);
 }
 
 /* Improved tag and pill styles */
@@ -2109,7 +2183,7 @@ tr:hover td {
 .search-input {
   width: 100%;
   padding: 0.75rem 1rem 0.75rem 2.5rem;
-  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.2));
+  border: 1px solid var(--border-color);
   border-radius: var(--border-radius);
   background-color: var(--bg-tertiary);
   color: var(--text-primary);
@@ -2251,7 +2325,7 @@ tr:hover td {
 }
 
 .habit-row:hover {
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: rgba(128, 128, 128, 0.05);
 }
 
 .habit-name {
@@ -2274,9 +2348,12 @@ tr:hover td {
 .habit-progress {
   width: 100px;
   height: 4px;
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(128, 128, 128, 0.1);
   border-radius: 2px;
   overflow: hidden;
+}
+.dark .habit-progress {
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 .habit-progress-bar {
@@ -2541,6 +2618,15 @@ tr:hover td {
 /* High contrast mode support */
 @media (prefers-contrast: high) {
   :root {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f0f0f0;
+    --bg-tertiary: #e0e0e0;
+    --text-primary: #000000;
+    --text-secondary: #333333;
+    --purple-primary: #800080;
+    --purple-light: #9932cc;
+  }
+  .dark {
     --bg-primary: #000000;
     --bg-secondary: #1a1a1a;
     --bg-tertiary: #2a2a2a;
@@ -2558,4 +2644,42 @@ tr:hover td {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* Theme Toggle Styles */
+.theme-toggle-section {
+  padding: 0 1.5rem 1rem;
+}
+
+.theme-toggle-container {
+  display: flex;
+  background-color: var(--bg-tertiary);
+  border-radius: var(--border-radius);
+  padding: 4px;
+  gap: 4px;
+}
+
+.theme-toggle-btn {
+  flex: 1;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  padding: 6px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+}
+
+.theme-toggle-btn:hover {
+  color: var(--text-primary);
+  background-color: rgba(128, 128, 128, 0.1);
+}
+
+.theme-toggle-btn.active {
+  background-color: var(--bg-secondary);
+  color: var(--purple-primary);
+  box-shadow: var(--shadow);
 }
