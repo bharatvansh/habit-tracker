@@ -52,7 +52,7 @@ export function initMonthlyTrendsChart(canvas: HTMLCanvasElement, habits: Habit[
     data = [0, 0, 0, 0, 0, 0, 0, 0, 0]
   }
 
-  new window.Chart(canvas.getContext("2d"), {
+  return new window.Chart(canvas.getContext("2d"), {
     type: "line",
     data: {
       labels: months,
@@ -128,7 +128,7 @@ export function initCategoryChart(canvas: HTMLCanvasElement, habits: Habit[] = [
   // Default colors
   const colors = ["#9d50ea", "#6a0dad", "#4CAF50", "#FFC107", "#F44336", "#2196F3"]
 
-  new window.Chart(canvas.getContext("2d"), {
+  return new window.Chart(canvas.getContext("2d"), {
     type: "doughnut",
     data: {
       labels: categories,

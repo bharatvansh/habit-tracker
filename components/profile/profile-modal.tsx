@@ -62,10 +62,15 @@ export default function ProfileModal({
               id="bio"
               className="form-control"
               rows={3}
+              maxLength={500}
               value={draft.bio}
               onChange={(e) => setDraft({ ...draft, bio: e.target.value })}
               placeholder="A short description about you"
+              style={{ resize: "vertical", minHeight: "80px", maxHeight: "200px" }}
             />
+            <div style={{ fontSize: "0.75rem", color: "var(--text-secondary)", marginTop: "0.25rem", textAlign: "right" }}>
+              {draft.bio.length}/500 characters
+            </div>
           </div>
           <div className="form-group">
             <label className="form-label" htmlFor="tz">
@@ -82,35 +87,81 @@ export default function ProfileModal({
 
           <div className="form-group">
             <label className="form-label">Notifications</label>
-            <div className="form-check">
-              <input
-                id="emailReminders"
-                className="form-check-input"
-                type="checkbox"
-                checked={draft.notifications.emailReminders}
-                onChange={(e) =>
+            <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "0.75rem" }}>
+              <div className="styled-checkbox">
+                <input
+                  id="emailReminders"
+                  type="checkbox"
+                  checked={draft.notifications.emailReminders}
+                  onChange={(e) =>
+                    setDraft({
+                      ...draft,
+                      notifications: { ...draft.notifications, emailReminders: e.target.checked },
+                    })
+                  }
+                />
+                <div
+                  className="checkbox-visual"
+                  onClick={() =>
+                    setDraft({
+                      ...draft,
+                      notifications: { ...draft.notifications, emailReminders: !draft.notifications.emailReminders },
+                    })
+                  }
+                >
+                  {draft.notifications.emailReminders && <i className="fa-solid fa-check" />}
+                </div>
+              </div>
+              <label
+                htmlFor="emailReminders"
+                onClick={() =>
                   setDraft({
                     ...draft,
-                    notifications: { ...draft.notifications, emailReminders: e.target.checked },
+                    notifications: { ...draft.notifications, emailReminders: !draft.notifications.emailReminders },
                   })
                 }
-              />
-              <label htmlFor="emailReminders">Email reminders</label>
+                style={{ cursor: "pointer", margin: 0 }}
+              >
+                Email reminders
+              </label>
             </div>
-            <div className="form-check">
-              <input
-                id="pushReminders"
-                className="form-check-input"
-                type="checkbox"
-                checked={draft.notifications.pushReminders}
-                onChange={(e) =>
+            <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+              <div className="styled-checkbox">
+                <input
+                  id="pushReminders"
+                  type="checkbox"
+                  checked={draft.notifications.pushReminders}
+                  onChange={(e) =>
+                    setDraft({
+                      ...draft,
+                      notifications: { ...draft.notifications, pushReminders: e.target.checked },
+                    })
+                  }
+                />
+                <div
+                  className="checkbox-visual"
+                  onClick={() =>
+                    setDraft({
+                      ...draft,
+                      notifications: { ...draft.notifications, pushReminders: !draft.notifications.pushReminders },
+                    })
+                  }
+                >
+                  {draft.notifications.pushReminders && <i className="fa-solid fa-check" />}
+                </div>
+              </div>
+              <label
+                htmlFor="pushReminders"
+                onClick={() =>
                   setDraft({
                     ...draft,
-                    notifications: { ...draft.notifications, pushReminders: e.target.checked },
+                    notifications: { ...draft.notifications, pushReminders: !draft.notifications.pushReminders },
                   })
                 }
-              />
-              <label htmlFor="pushReminders">Push reminders</label>
+                style={{ cursor: "pointer", margin: 0 }}
+              >
+                Push reminders
+              </label>
             </div>
           </div>
 

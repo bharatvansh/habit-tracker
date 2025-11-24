@@ -6,12 +6,26 @@ import { useHabitStore } from "@/store/habit-store"
 
 export default function CategoryBreakdown() {
   const chartRef = useRef<HTMLCanvasElement>(null)
+  const chartInstanceRef = useRef<any>(null)
   const { habits } = useHabitStore()
 
   useEffect(() => {
     if (chartRef.current) {
-      // Pass habits to the chart initialization function
-      initCategoryChart(chartRef.current, habits)
+      // Destroy previous chart instance if it exists
+      if (chartInstanceRef.current) {
+        chartInstanceRef.current.destroy()
+      }
+      
+      // Create new chart and store the instance
+      chartInstanceRef.current = initCategoryChart(chartRef.current, habits)
+    }
+
+    // Cleanup function to destroy chart on unmount
+    return () => {
+      if (chartInstanceRef.current) {
+        chartInstanceRef.current.destroy()
+        chartInstanceRef.current = null
+      }
     }
   }, [habits])
 
