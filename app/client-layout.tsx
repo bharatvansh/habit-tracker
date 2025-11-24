@@ -8,6 +8,7 @@ import { useHabitStore } from "@/store/habit-store"
 import { Toaster } from "@/components/ui/toaster"
 import { ProfileProvider } from "@/hooks/use-profile"
 import { ThemeProvider } from "@/components/theme-provider"
+import { useNotifications } from "@/hooks/use-notifications"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -34,6 +35,12 @@ function WeeklyResetHandler() {
   return null
 }
 
+// Client component for notifications
+function NotificationHandler() {
+  useNotifications()
+  return null
+}
+
 export default function ClientLayout({
   children,
 }: {
@@ -43,7 +50,6 @@ export default function ClientLayout({
     <html lang="en">
       <head>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-        <script src="https://cdn.jsdelivr.net/npm/chart.js" async></script>
       </head>
       <body className={inter.className}>
         <ThemeProvider
@@ -57,6 +63,7 @@ export default function ClientLayout({
               <Sidebar />
               <div className="main-content">
                 <WeeklyResetHandler />
+                <NotificationHandler />
                 {children}
               </div>
             </div>

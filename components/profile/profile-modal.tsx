@@ -12,10 +12,27 @@ export default function ProfileModal({
 }) {
   const { profile, updateProfile } = useProfile()
   const [draft, setDraft] = React.useState(profile)
+  const [notificationPermission, setNotificationPermission] = React.useState<NotificationPermission>("default")
 
   React.useEffect(() => {
     if (isOpen) setDraft(profile)
+    if ("Notification" in window) {
+      setNotificationPermission(Notification.permission)
+    }
   }, [isOpen, profile])
+
+  const requestNotificationPermission = async () => {
+    if ("Notification" in window) {
+      const permission = await Notification.requestPermission()
+      setNotificationPermission(permission)
+      if (permission === "granted") {
+        new Notification("Notifications Enabled!", {
+          body: "You'll now receive habit and reminder notifications",
+          icon: "/icon-192x192.png",
+        })
+      }
+    }
+  }
 
   if (!isOpen) return null
 
@@ -86,7 +103,35 @@ export default function ProfileModal({
           </div>
 
           <div className="form-group">
-            <label className="form-label">Notifications</label>
+            <label className="form-label">Browser Notifications</label>
+            {notificationPermission === "default" && (
+              <div style={{ marginBottom: "1rem" }}>
+                <button
+                  type="button"
+                  className="btn-save"
+                  onClick={requestNotificationPermission}
+                  style={{ width: "100%" }}
+                >
+                  <i className="fa-solid fa-bell" style={{ marginRight: "0.5rem" }}></i>
+                  Enable Browser Notifications
+                </button>
+                <p style={{ fontSize: "0.875rem", color: "var(--text-secondary)", marginTop: "0.5rem" }}>
+                  Allow notifications to receive habit and reminder alerts
+                </p>
+              </div>
+            )}
+            {notificationPermission === "granted" && (
+              <div style={{ padding: "0.75rem", backgroundColor: "var(--success-bg, #d4edda)", borderRadius: "0.5rem", marginBottom: "1rem" }}>
+                <i className="fa-solid fa-check-circle" style={{ color: "var(--success, #28a745)", marginRight: "0.5rem" }}></i>
+                <span style={{ color: "var(--success, #28a745)" }}>Browser notifications enabled</span>
+              </div>
+            )}
+            {notificationPermission === "denied" && (
+              <div style={{ padding: "0.75rem", backgroundColor: "var(--error-bg, #f8d7da)", borderRadius: "0.5rem", marginBottom: "1rem" }}>
+                <i className="fa-solid fa-exclamation-circle" style={{ color: "var(--error, #dc3545)", marginRight: "0.5rem" }}></i>
+                <span style={{ color: "var(--error, #dc3545)" }}>Notifications blocked. Enable in browser settings.</span>
+              </div>
+            )}
             <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "0.75rem" }}>
               <div className="styled-checkbox">
                 <input
