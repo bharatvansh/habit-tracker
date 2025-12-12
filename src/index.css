@@ -1,0 +1,69 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .glass-panel {
+    @apply bg-card-dark/60 backdrop-blur-xl border border-white/5;
+  }
+  
+  .min-panel {
+    @apply bg-card-dark border border-[#27272a];
+  }
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: #050505;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #27272a;
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3f3f46;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Specific Animations */
+@keyframes pulse-line {
+  0% {
+    opacity: 0.3;
+    box-shadow: 0 0 5px rgba(124, 58, 237, 0.3);
+  }
+  50% {
+    opacity: 0.8;
+    box-shadow: 0 0 10px rgba(124, 58, 237, 0.6);
+  }
+  100% {
+    opacity: 0.3;
+    box-shadow: 0 0 5px rgba(124, 58, 237, 0.3);
+  }
+}
+
+.laser-line {
+  animation: pulse-line 3s infinite ease-in-out;
+}
+
+.chrono-dial-bg {
+  background: conic-gradient(from 180deg, #7c3aed 0%, #7c3aed 70%, #18181b 70%, #18181b 100%);
+}

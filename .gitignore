@@ -54,3 +54,7 @@ Desktop.ini
 # misc
 .turbo
 .cache
+#
+ Electron
+/electron/dist
+/electron-builder.yml
