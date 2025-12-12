@@ -1,14 +1,19 @@
+# Netlify configuration for Habitual web app
+
 [build]
+  # Build command
   command = "npm run build"
-  publish = ".next"
+  # Directory to publish (Vite outputs to dist/)
+  publish = "dist"
 
-[[plugins]]
-  package = "@netlify/plugin-nextjs"
-
-[build.environment]
-  NODE_VERSION = "18"
-
+# Redirect all routes to index.html for SPA routing
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
+
+# Optional: Set headers for better caching
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
