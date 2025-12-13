@@ -1,5 +1,6 @@
 import React from 'react';
 import { HashRouter, Routes, Route } from 'react-router-dom';
+import { AppProviders } from './context';
 import GlobalNavigation from './components/navigation/GlobalNavigation';
 import TitleBar from './components/shared/TitleBar';
 import DashboardScreen from './screens/DashboardScreen';
@@ -19,18 +20,20 @@ export const routes = [
 
 export default function App() {
   return (
-    <HashRouter>
-      <div className="min-h-screen bg-background-dark">
-        <TitleBar />
-        <main className="pb-16 md:pb-0 pt-8">
-          <Routes>
-            {routes.map((route) => (
-              <Route key={route.path} path={route.path} element={route.element} />
-            ))}
-          </Routes>
-        </main>
-        <GlobalNavigation />
-      </div>
-    </HashRouter>
+    <AppProviders>
+      <HashRouter>
+        <div className="min-h-screen bg-background-dark">
+          <TitleBar />
+          <main className="pb-16 md:pb-0 pt-8">
+            <Routes>
+              {routes.map((route) => (
+                <Route key={route.path} path={route.path} element={route.element} />
+              ))}
+            </Routes>
+          </main>
+          <GlobalNavigation />
+        </div>
+      </HashRouter>
+    </AppProviders>
   );
 }

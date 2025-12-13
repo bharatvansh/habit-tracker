@@ -1,4 +1,5 @@
 import React from 'react';
+import { useUser } from '../context';
 import DesktopSidebar from '../components/navigation/DesktopSidebar';
 import SimpleHeader from '../components/shared/SimpleHeader';
 
@@ -76,6 +77,12 @@ function StatCardsSection() {
 
 // Account Section Component
 function AccountSection() {
+  const { user, updateUser } = useUser();
+
+  const handleNameChange = (e) => {
+    updateUser({ displayName: e.target.value });
+  };
+
   return (
     <section>
       <div className="mb-5">
@@ -100,7 +107,8 @@ function AccountSection() {
               <input 
                 className="bg-transparent border-0 border-b border-zinc-800 focus:border-primary focus:ring-0 px-0 py-2 text-white font-normal placeholder-zinc-700 transition-colors w-full" 
                 type="text" 
-                defaultValue="Alex Strangelove"
+                value={user.displayName}
+                onChange={handleNameChange}
               />
             </div>
           </div>
@@ -112,6 +120,12 @@ function AccountSection() {
 
 // Appearance Section Component
 function AppearanceSection() {
+  const { user, updatePreferences } = useUser();
+
+  const handleThemeChange = (theme) => {
+    updatePreferences({ theme });
+  };
+
   return (
     <section className="flex flex-col gap-5">
       <h2 className="text-lg font-medium text-white">Appearance</h2>
@@ -119,7 +133,14 @@ function AppearanceSection() {
         <div className="grid grid-cols-2 gap-4">
           {/* Light Theme Option */}
           <label className="cursor-pointer group">
-            <input className="peer sr-only" name="theme" type="radio" value="light" />
+            <input 
+              className="peer sr-only" 
+              name="theme" 
+              type="radio" 
+              value="light"
+              checked={user.preferences?.theme === 'light'}
+              onChange={() => handleThemeChange('light')}
+            />
             <div className="rounded-lg border border-zinc-800 peer-checked:border-zinc-500 bg-black p-4 flex flex-col items-center gap-3 transition-all opacity-50 peer-checked:opacity-100">
               <span className="material-symbols-outlined text-zinc-400">light_mode</span>
               <span className="text-xs font-medium text-zinc-400">Light</span>
@@ -128,7 +149,14 @@ function AppearanceSection() {
 
           {/* Dark Theme Option (Default Selected) */}
           <label className="cursor-pointer group">
-            <input defaultChecked className="peer sr-only" name="theme" type="radio" value="dark" />
+            <input 
+              className="peer sr-only" 
+              name="theme" 
+              type="radio" 
+              value="dark"
+              checked={user.preferences?.theme === 'dark' || !user.preferences?.theme}
+              onChange={() => handleThemeChange('dark')}
+            />
             <div className="rounded-lg border border-zinc-800 peer-checked:border-primary peer-checked:text-primary bg-black p-4 flex flex-col items-center gap-3 transition-all">
               <span className="material-symbols-outlined text-white peer-checked:text-primary">dark_mode</span>
               <span className="text-xs font-medium text-white peer-checked:text-primary">Dark</span>
