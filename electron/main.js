@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 
 let mainWindow;
@@ -10,6 +10,8 @@ function createWindow() {
     minWidth: 1024,
     minHeight: 700,
     backgroundColor: '#000000',
+    frame: false,
+    titleBarStyle: 'hidden',
     webPreferences: {
       contextIsolation: true,
       nodeIntegration: false,
@@ -17,6 +19,17 @@ function createWindow() {
       preload: path.join(__dirname, 'preload.js')
     }
   });
+
+  // Handle window control IPC events
+  ipcMain.on('app:minimize', () => mainWindow?.minimize());
+  ipcMain.on('app:maximize', () => {
+    if (mainWindow?.isMaximized()) {
+      mainWindow.unmaximize();
+    } else {
+      mainWindow?.maximize();
+    }
+  });
+  ipcMain.on('app:close', () => mainWindow?.close());
 
   // Load the app - in development load from Vite dev server, in production load built files
   if (process.env.NODE_ENV === 'development') {
