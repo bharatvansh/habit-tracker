@@ -1,4 +1,5 @@
 import React from 'react';
+import { useUser, useTasks } from '../context';
 import DesktopSidebar from '../components/navigation/DesktopSidebar';
 import SimpleHeader from '../components/shared/SimpleHeader';
 import FocusTimer from '../components/widgets/FocusTimer';
@@ -7,7 +8,19 @@ import UpNextCard from '../components/widgets/UpNextCard';
 import ProductivityChart from '../components/widgets/ProductivityChart';
 import HabitsWidget from '../components/widgets/HabitsWidget';
 
+// Get appropriate greeting based on time of day
+function getGreeting() {
+  const hour = new Date().getHours();
+  if (hour < 12) return 'Good Morning';
+  if (hour < 17) return 'Good Afternoon';
+  return 'Good Evening';
+}
+
 export default function DashboardScreen() {
+  const { firstName } = useUser();
+  const { focusBlocksRemaining } = useTasks();
+  const greeting = getGreeting();
+
   return (
     <div className="flex h-full w-full bg-background-dark">
       <DesktopSidebar />
@@ -20,11 +33,11 @@ export default function DashboardScreen() {
             <div className="flex flex-wrap justify-between items-end gap-4">
               <div>
                 <p className="text-text-muted text-sm font-medium tracking-widest uppercase mb-1">Overview</p>
-                <h1 className="text-white text-4xl lg:text-5xl font-light tracking-tight">Good Morning, Alex.</h1>
+                <h1 className="text-white text-4xl lg:text-5xl font-light tracking-tight">{greeting}, {firstName}.</h1>
               </div>
               <div className="flex items-center gap-3">
                 <span className="text-xs text-text-muted font-mono bg-white/5 px-3 py-1.5 rounded-full border border-white/5">
-                  3 Focus Blocks remaining
+                  {focusBlocksRemaining} Focus Block{focusBlocksRemaining !== 1 ? 's' : ''} remaining
                 </span>
               </div>
             </div>

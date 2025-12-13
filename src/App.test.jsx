@@ -3,6 +3,7 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import * as fc from 'fast-check';
+import { AppProviders } from './context';
 import GlobalNavigation, { navItems } from './components/navigation/GlobalNavigation';
 import DesktopSidebar from './components/navigation/DesktopSidebar';
 import DashboardScreen from './screens/DashboardScreen';
@@ -20,17 +21,19 @@ const routeConfig = [
   { path: '/settings', element: <SettingsScreen />, name: 'Settings' },
 ];
 
-// Helper to render app at a specific route
+// Helper to render app at a specific route with context providers
 function renderAtRoute(initialRoute) {
   return render(
-    <MemoryRouter initialEntries={[initialRoute]}>
-      <Routes>
-        {routeConfig.map((route) => (
-          <Route key={route.path} path={route.path} element={route.element} />
-        ))}
-      </Routes>
-      <GlobalNavigation />
-    </MemoryRouter>
+    <AppProviders>
+      <MemoryRouter initialEntries={[initialRoute]}>
+        <Routes>
+          {routeConfig.map((route) => (
+            <Route key={route.path} path={route.path} element={route.element} />
+          ))}
+        </Routes>
+        <GlobalNavigation />
+      </MemoryRouter>
+    </AppProviders>
   );
 }
 
@@ -62,9 +65,9 @@ describe('Property 1: Navigation Route Consistency', () => {
         // At least one heading should contain the expected route name or related content
         const hasExpectedContent = screenTitles.some(title => {
           const text = title.textContent;
-          // Dashboard shows "Good Morning, Alex." instead of "Dashboard"
+          // Dashboard shows "Good Morning/Afternoon/Evening, [Name]." instead of "Dashboard"
           if (expectedRoute.name === 'Dashboard') {
-            return text.includes('Good Morning') || text.includes('Habitual');
+            return text.includes('Good Morning') || text.includes('Good Afternoon') || text.includes('Good Evening') || text.includes('Habitual');
           }
           return text.includes(expectedRoute.name) || text.includes('Habitual');
         });
