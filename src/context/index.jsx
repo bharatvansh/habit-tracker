@@ -6,6 +6,7 @@ import { WeatherProvider, useWeather } from './WeatherContext';
 import { TimerProvider, useTimer } from './TimerContext';
 import { RemindersProvider, useReminders } from './RemindersContext';
 import { CalendarProvider, useCalendar } from './CalendarContext';
+import { ProductivityProvider, useProductivity } from './ProductivityContext';
 
 // Combined provider that wraps all context providers
 export function AppProviders({ children }) {
@@ -17,7 +18,9 @@ export function AppProviders({ children }) {
             <CalendarProvider>
               <WeatherProvider>
                 <TimerProvider>
-                  {children}
+                  <ProductivityProvider>
+                    {children}
+                  </ProductivityProvider>
                 </TimerProvider>
               </WeatherProvider>
             </CalendarProvider>
@@ -36,3 +39,4 @@ export { useWeather } from './WeatherContext';
 export { useTimer } from './TimerContext';
 export { useReminders } from './RemindersContext';
 export { useCalendar } from './CalendarContext';
+export { useProductivity } from './ProductivityContext';

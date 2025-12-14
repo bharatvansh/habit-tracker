@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 
 const TIMER_STORAGE_KEY = 'habitual_timer';
+const TIMER_SESSIONS_KEY = 'habitual_timer_sessions';
 
 const DEFAULT_SESSION_DURATION = 45 * 60; // 45 minutes in seconds
 
@@ -34,8 +35,21 @@ export function TimerProvider({ children }) {
       isRunning: false,
       isPaused: false,
       lastUpdated: null,
+      sessionStartedAt: null,
     };
   });
+
+  // Track completed sessions for productivity
+  const [completedSessions, setCompletedSessions] = useState(() => {
+    try {
+      const stored = localStorage.getItem(TIMER_SESSIONS_KEY);
+      if (stored) return JSON.parse(stored);
+    } catch {}
+    return [];
+  });
+
+  // Callback for when session completes
+  const onSessionCompleteRef = useRef(null);
 
   const intervalRef = useRef(null);
 
@@ -54,17 +68,39 @@ export function TimerProvider({ children }) {
     }
   }, [timerState]);
 
+  // Persist completed sessions
+  useEffect(() => {
+    try {
+      localStorage.setItem(TIMER_SESSIONS_KEY, JSON.stringify(completedSessions));
+    } catch {}
+  }, [completedSessions]);
+
   // Timer countdown logic
   useEffect(() => {
     if (timerState.isRunning && timerState.remainingSeconds > 0) {
       intervalRef.current = setInterval(() => {
         setTimerState((prev) => {
           if (prev.remainingSeconds <= 1) {
+            // Session completed - record it
+            const completedMinutes = Math.round(prev.totalSeconds / 60);
+            const session = {
+              completedAt: new Date().toISOString(),
+              durationMinutes: completedMinutes,
+              sessionName: prev.sessionName,
+            };
+            setCompletedSessions(s => [...s, session]);
+            
+            // Trigger callback if set
+            if (onSessionCompleteRef.current) {
+              onSessionCompleteRef.current(completedMinutes);
+            }
+            
             return {
               ...prev,
               remainingSeconds: 0,
               isRunning: false,
               isPaused: false,
+              sessionStartedAt: null,
             };
           }
           return {
@@ -91,6 +127,7 @@ export function TimerProvider({ children }) {
       isRunning: true,
       isPaused: false,
       lastUpdated: Date.now(),
+      sessionStartedAt: Date.now(),
     });
   }, []);
 
@@ -112,12 +149,33 @@ export function TimerProvider({ children }) {
   }, []);
 
   const stopTimer = useCallback(() => {
-    setTimerState((prev) => ({
-      ...prev,
-      remainingSeconds: prev.totalSeconds,
-      isRunning: false,
-      isPaused: false,
-    }));
+    setTimerState((prev) => {
+      // Record partial session if significant time was spent
+      if (prev.sessionStartedAt) {
+        const elapsedMinutes = Math.round((prev.totalSeconds - prev.remainingSeconds) / 60);
+        if (elapsedMinutes >= 5) {
+          const session = {
+            completedAt: new Date().toISOString(),
+            durationMinutes: elapsedMinutes,
+            sessionName: prev.sessionName,
+            partial: true,
+          };
+          setCompletedSessions(s => [...s, session]);
+          
+          if (onSessionCompleteRef.current) {
+            onSessionCompleteRef.current(elapsedMinutes);
+          }
+        }
+      }
+      
+      return {
+        ...prev,
+        remainingSeconds: prev.totalSeconds,
+        isRunning: false,
+        isPaused: false,
+        sessionStartedAt: null,
+      };
+    });
   }, []);
 
   const resetTimer = useCallback(() => {
@@ -147,6 +205,19 @@ export function TimerProvider({ children }) {
     ? ((timerState.totalSeconds - timerState.remainingSeconds) / timerState.totalSeconds) * 100
     : 0;
 
+  // Set callback for session completion (used by productivity tracking)
+  const setOnSessionComplete = useCallback((callback) => {
+    onSessionCompleteRef.current = callback;
+  }, []);
+
+  // Get today's completed sessions
+  const todaysSessions = completedSessions.filter(s => {
+    const today = new Date().toISOString().split('T')[0];
+    return s.completedAt.startsWith(today);
+  });
+
+  const totalFocusMinutesToday = todaysSessions.reduce((acc, s) => acc + s.durationMinutes, 0);
+
   const value = {
     ...timerState,
     formattedTime,
@@ -156,6 +227,10 @@ export function TimerProvider({ children }) {
     resumeTimer,
     stopTimer,
     resetTimer,
+    completedSessions,
+    todaysSessions,
+    totalFocusMinutesToday,
+    setOnSessionComplete,
   };
 
   return <TimerContext.Provider value={value}>{children}</TimerContext.Provider>;
