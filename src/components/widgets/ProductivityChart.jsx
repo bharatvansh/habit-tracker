@@ -148,13 +148,13 @@ function ChartTooltip({ point, containerRef, isVisible, chartHeight = 180 }) {
       }}
     >
       <div 
-        className="bg-[#0f0f0f]/95 backdrop-blur-md border border-primary/20 rounded-lg px-3 py-2 shadow-xl shadow-black/50"
+        className="bg-theme-card/95 backdrop-blur-md border border-primary/20 rounded-lg px-3 py-2 shadow-xl"
         style={{
           transform: isVisible ? 'scale(1)' : 'scale(0.9)',
           transition: 'transform 0.15s cubic-bezier(0.4, 0, 0.2, 1)',
         }}
       >
-        <div className="text-white/90 text-[11px] font-medium text-center tracking-wide">
+        <div className="text-theme-primary/90 text-[11px] font-medium text-center tracking-wide">
           {point.label}
         </div>
         <div className="text-primary text-xs font-semibold text-center">
@@ -163,7 +163,7 @@ function ChartTooltip({ point, containerRef, isVisible, chartHeight = 180 }) {
       </div>
       {/* Arrow pointing to the data point */}
       <div 
-        className="absolute left-1/2 w-2 h-2 bg-[#0f0f0f]/95 border-primary/20 rotate-45"
+        className="absolute left-1/2 w-2 h-2 bg-theme-card/95 border-primary/20 rotate-45"
         style={{
           transform: 'translateX(-50%)',
           ...(showBelow 
@@ -320,46 +320,106 @@ export default function ProductivityChart() {
     updateHabitsProgress(completion);
   }, [overallCompletion, updateHabitsProgress]);
 
-  // Generate chart data based on view
+  // Generate chart data based on view - using REAL data from tasks and habits
   const chartData = useMemo(() => {
-    const currentHour = new Date().getHours();
-    const today = new Date().getDay();
+    const now = new Date();
+    const currentHour = now.getHours();
+    const todayStr = now.toISOString().split('T')[0];
+    
+    // Get tasks completed today with their completion times
+    const todayCompletedTasks = doneTasks.filter(t => 
+      t.completedAt && t.completedAt.startsWith(todayStr)
+    );
+    
+    // Current habit completion rate (0-1)
+    const habitRate = overallCompletion / 100;
     
     if (view === 'today') {
       // Show hourly data for today (6am to current hour or 6pm)
       const startHour = 6;
       const endHour = Math.max(currentHour, 18);
-      const slots = todaySlots.slice(startHour, endHour + 1);
+      const data = [];
       
-      return slots.map((slot, i) => {
-        const hour = startHour + i;
-        // Use real data if available, otherwise generate realistic demo pattern
-        const hasRealData = slot.focusMinutes > 0 || slot.tasksCompleted > 0 || slot.habitsProgress > 0;
-        const score = hasRealData ? slot.score : generateDemoScore(hour, today);
+      for (let hour = startHour; hour <= endHour; hour++) {
+        // Count tasks completed in this hour
+        const tasksThisHour = todayCompletedTasks.filter(t => {
+          const completedHour = new Date(t.completedAt).getHours();
+          return completedHour === hour;
+        }).length;
         
-        return {
-          score,
+        // Get productivity slot data
+        const slot = todaySlots[hour] || { focusMinutes: 0, tasksCompleted: 0, habitsProgress: 0 };
+        
+        // Calculate real score based on actual activity
+        // Tasks: each task = 15 points (max 45 from tasks)
+        // Focus: each 15 min = 10 points (max 40 from focus)  
+        // Habits: up to 15 points based on completion
+        const taskScore = Math.min(tasksThisHour * 15, 45);
+        const focusScore = Math.min((slot.focusMinutes / 15) * 10, 40);
+        // Apply habit progress to hours up to current
+        const habitScore = hour <= currentHour ? habitRate * 15 : 0;
+        
+        // Base score that increases through the day (simulates natural productivity)
+        const hourFactor = hour <= currentHour ? 1 : 0.3;
+        const baseScore = 20 * hourFactor;
+        
+        const totalScore = Math.round(baseScore + taskScore + focusScore + habitScore);
+        
+        data.push({
+          score: Math.max(10, Math.min(100, totalScore)),
           label: `${hour.toString().padStart(2, '0')}:00`,
           isCurrent: hour === currentHour,
-          hasRealData,
-        };
-      });
+          hasRealData: tasksThisHour > 0 || slot.focusMinutes > 0 || habitRate > 0,
+          tasksCompleted: tasksThisHour,
+          focusMinutes: slot.focusMinutes,
+        });
+      }
+      
+      return data;
     } else {
       // Show daily data for the week
-      return weekSlots.map((slot, i) => {
-        const hasRealData = slot.focusMinutes > 0 || slot.tasksCompleted > 0 || slot.habitsCompletion > 0;
-        // Generate consistent demo data based on day
-        const demoScore = Math.round(seededRandom(i * 7 + 42) * 50 + 35);
+      const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+      const data = [];
+      
+      for (let i = 6; i >= 0; i--) {
+        const date = new Date(now);
+        date.setDate(date.getDate() - i);
+        const dateStr = date.toISOString().split('T')[0];
+        const dayName = dayNames[date.getDay()];
         
-        return {
-          score: hasRealData ? slot.score : demoScore,
-          label: slot.dayName,
-          isCurrent: i === weekSlots.length - 1,
-          hasRealData,
-        };
-      });
+        // Count tasks completed on this day
+        const tasksThisDay = doneTasks.filter(t => 
+          t.completedAt && t.completedAt.startsWith(dateStr)
+        ).length;
+        
+        // Get week slot data
+        const slot = weekSlots.find(s => s.date === dateStr) || { focusMinutes: 0, habitsCompletion: 0 };
+        
+        // Calculate score
+        // Tasks: each task = 12 points (max 60)
+        // Focus: each 30 min = 8 points (max 32)
+        // Habits: up to 8 points
+        const taskScore = Math.min(tasksThisDay * 12, 60);
+        const focusScore = Math.min((slot.focusMinutes / 30) * 8, 32);
+        const habitScore = (i === 0 ? habitRate : slot.habitsCompletion) * 8;
+        
+        const isToday = i === 0;
+        const baseScore = isToday ? 25 : 20;
+        
+        const totalScore = Math.round(baseScore + taskScore + focusScore + habitScore);
+        
+        data.push({
+          score: Math.max(15, Math.min(100, totalScore)),
+          label: dayName,
+          isCurrent: isToday,
+          hasRealData: tasksThisDay > 0 || slot.focusMinutes > 0,
+          tasksCompleted: tasksThisDay,
+        });
+      }
+      
+      return data;
     }
-  }, [view, todaySlots, weekSlots]);
+  }, [view, todaySlots, weekSlots, doneTasks, overallCompletion]);
 
   // Find current point index
   useEffect(() => {
@@ -402,7 +462,7 @@ export default function ProductivityChart() {
   const currentPoint = points?.[currentPointIndex];
 
   return (
-    <div className="xl:col-span-3 rounded-3xl bg-card-dark border border-white/5 p-8 relative overflow-hidden group">
+    <div className="xl:col-span-3 rounded-3xl bg-theme-card border border-theme-subtle p-8 relative overflow-hidden group transition-colors duration-200">
       {/* Subtle ambient glow */}
       <div 
         className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"
@@ -414,8 +474,8 @@ export default function ProductivityChart() {
       {/* Header */}
       <div className="flex justify-between items-end mb-8 relative z-10">
         <div>
-          <h3 className="text-white text-lg font-light">Productivity Flow</h3>
-          <p className="text-text-muted text-xs mt-1">
+          <h3 className="text-theme-primary text-lg font-light">Productivity Flow</h3>
+          <p className="text-theme-muted text-xs mt-1">
             Focus score trending {trend >= 0 ? 'up' : 'down'}{' '}
             <span className={trend >= 0 ? 'text-emerald-400' : 'text-rose-400'}>
               {trendLabel}
@@ -427,8 +487,8 @@ export default function ProductivityChart() {
             onClick={() => setView('today')}
             className={`text-xs font-medium pb-0.5 cursor-pointer transition-all duration-300 ${
               view === 'today'
-                ? 'text-white font-bold border-b border-primary'
-                : 'text-text-muted hover:text-white'
+                ? 'text-theme-primary font-bold border-b border-primary'
+                : 'text-theme-muted hover:text-theme-primary'
             }`}
           >
             Today
@@ -437,8 +497,8 @@ export default function ProductivityChart() {
             onClick={() => setView('week')}
             className={`text-xs font-medium pb-0.5 cursor-pointer transition-all duration-300 ${
               view === 'week'
-                ? 'text-white font-bold border-b border-primary'
-                : 'text-text-muted hover:text-white'
+                ? 'text-theme-primary font-bold border-b border-primary'
+                : 'text-theme-muted hover:text-theme-primary'
             }`}
           >
             Week
@@ -573,24 +633,24 @@ export default function ProductivityChart() {
         <div className="absolute bottom-0 left-0 right-0 flex justify-between px-1 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
           {view === 'today' ? (
             <>
-              <span className="text-[9px] text-text-muted/50">6am</span>
-              <span className="text-[9px] text-text-muted/50">12pm</span>
-              <span className="text-[9px] text-text-muted/50">6pm</span>
-              <span className="text-[9px] text-text-muted/50">Now</span>
+              <span className="text-[9px] text-theme-muted/50">6am</span>
+              <span className="text-[9px] text-theme-muted/50">12pm</span>
+              <span className="text-[9px] text-theme-muted/50">6pm</span>
+              <span className="text-[9px] text-theme-muted/50">Now</span>
             </>
           ) : (
             weekSlots.slice(0, 4).map((slot, i) => (
-              <span key={i} className="text-[9px] text-text-muted/50">{slot.dayName}</span>
+              <span key={i} className="text-[9px] text-theme-muted/50">{slot.dayName}</span>
             ))
           )}
         </div>
       </div>
 
       {/* Stats row */}
-      <div className="flex gap-6 mt-4 pt-4 border-t border-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+      <div className="flex gap-6 mt-4 pt-4 border-t border-theme-subtle opacity-0 group-hover:opacity-100 transition-opacity duration-500">
         <div className="flex items-center gap-2">
           <div className="w-2 h-2 rounded-full bg-primary" />
-          <span className="text-[10px] text-text-muted">
+          <span className="text-[10px] text-theme-muted">
             {view === 'today' 
               ? `${totalFocusMinutesToday || Math.round(todaySlots.reduce((a, s) => a + s.focusMinutes, 0))}m focused`
               : `${Math.round(weekSlots.reduce((a, s) => a + s.focusMinutes, 0) / 60)}h this week`
@@ -599,7 +659,7 @@ export default function ProductivityChart() {
         </div>
         <div className="flex items-center gap-2">
           <div className="w-2 h-2 rounded-full bg-emerald-400" />
-          <span className="text-[10px] text-text-muted">
+          <span className="text-[10px] text-theme-muted">
             {view === 'today'
               ? `${doneTasks.filter(t => t.completedAt?.startsWith(new Date().toISOString().split('T')[0])).length} tasks done`
               : `${doneTasks.length} tasks this week`

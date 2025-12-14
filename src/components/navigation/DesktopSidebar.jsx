@@ -23,12 +23,12 @@ export default function DesktopSidebar() {
     `flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors group ${
       isActive(path)
         ? 'bg-primary/10 text-primary border border-primary/20'
-        : 'text-text-muted hover:text-white hover:bg-white/5'
+        : 'text-theme-muted hover:text-theme-primary hover:bg-[var(--hover-overlay)]'
     }`;
 
   return (
     <nav
-      className="w-20 lg:w-64 flex-col border-r border-[#27272a] bg-black h-full flex-shrink-0 z-20 hidden md:flex"
+      className="w-20 lg:w-64 flex-col border-r border-theme-primary bg-theme-card h-full flex-shrink-0 z-20 hidden md:flex transition-colors duration-200"
       data-testid="desktop-sidebar"
     >
       {/* Logo Section */}
@@ -37,7 +37,7 @@ export default function DesktopSidebar() {
           <span className="material-symbols-outlined text-white text-[18px]">all_inclusive</span>
         </div>
         <div className="hidden lg:flex flex-col">
-          <h1 className="text-white text-sm font-bold tracking-tight">Habitual</h1>
+          <h1 className="text-theme-primary text-sm font-bold tracking-tight">Habitual</h1>
         </div>
       </div>
 
@@ -56,7 +56,7 @@ export default function DesktopSidebar() {
         ))}
 
         {/* Divider */}
-        <div className="my-4 border-t border-[#27272a]"></div>
+        <div className="my-4 border-t border-theme-primary"></div>
 
         {/* Bottom Navigation Items (Settings) */}
         {bottomNavItems.map((item) => (
@@ -73,17 +73,17 @@ export default function DesktopSidebar() {
       </div>
 
       {/* User Profile Section */}
-      <div className="p-4 border-t border-[#27272a]">
-        <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 cursor-pointer transition-colors">
+      <div className="p-4 border-t border-theme-primary">
+        <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-[var(--hover-overlay)] cursor-pointer transition-colors">
           <div
-            className="h-6 w-6 rounded-full bg-cover bg-center ring-1 ring-white/20"
+            className="h-6 w-6 rounded-full bg-cover bg-center ring-1 ring-theme-primary"
             style={{
               backgroundImage:
                 "url('https://lh3.googleusercontent.com/aida-public/AB6AXuBwxTbu8JnlhJ_p5kU7_TkNXMciOOJNpYsR_gGnMTg0Q5N_Mh1NPJMVfaTsV8D35MJ4qOR3WZ22Jl0PzWbq__BpLCzyQrEnzND8wzBw2qXkirmdNivp7eERoxVyZLdRYPbafDHJ4cX1Q-K9YSePV_8jEfGN0twAHWnZHgighELV8eyVPWrfXYPYh2RUCipAZaaFKX5ppp1NEUspR-eMWZxUkWnEcQhH3V-WbOp9PYmwcfb01Wtx3cfCbR4T6kCxv6eUNP9G5eZXqCk')",
             }}
           ></div>
           <div className="hidden lg:flex flex-col">
-            <p className="text-xs font-medium text-white">{user?.displayName || user?.name || 'User'}</p>
+            <p className="text-xs font-medium text-theme-primary">{user?.displayName || user?.name || 'User'}</p>
           </div>
         </div>
       </div>

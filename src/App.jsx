@@ -22,7 +22,7 @@ export default function App() {
   return (
     <AppProviders>
       <HashRouter>
-        <div className="min-h-screen bg-background-dark">
+        <div className="min-h-screen bg-theme-primary transition-colors duration-200">
           <TitleBar />
           <main className="pb-16 md:pb-0 pt-8">
             <Routes>

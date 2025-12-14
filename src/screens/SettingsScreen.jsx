@@ -1,20 +1,20 @@
 import React, { useMemo } from 'react';
-import { useHabits, useReminders, useTasks, useUser } from '../context';
+import { useHabits, useReminders, useTasks, useUser, useTheme } from '../context';
 import DesktopSidebar from '../components/navigation/DesktopSidebar';
 import SimpleHeader from '../components/shared/SimpleHeader';
 
 export default function SettingsScreen() {
   return (
-    <div className="flex h-full w-full bg-background-dark">
+    <div className="flex h-full w-full bg-theme-primary">
       <DesktopSidebar />
       <div className="flex-1 flex flex-col h-full overflow-hidden relative">
         <SimpleHeader title="Settings" />
-        <main className="flex-1 flex flex-col relative overflow-y-auto overflow-x-hidden bg-background-dark pb-20">
+        <main className="flex-1 flex flex-col relative overflow-y-auto overflow-x-hidden bg-theme-primary pb-20">
           {/* Header Section */}
           <header className="px-8 pt-12 pb-8 max-w-6xl mx-auto w-full">
             <div className="flex flex-col gap-1">
-              <h1 className="text-3xl font-medium tracking-tight text-white">Settings</h1>
-              <p className="text-text-secondary text-base font-light">Manage your preferences and account security.</p>
+              <h1 className="text-3xl font-medium tracking-tight text-theme-primary">Settings</h1>
+              <p className="text-theme-secondary text-base font-light">Manage your preferences and account security.</p>
             </div>
           </header>
 
@@ -116,57 +116,57 @@ function StatCardsSection() {
   return (
     <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
       {/* Storage Card */}
-      <div className="flex flex-col justify-between p-6 bg-surface-dark rounded-xl border border-border-dark/50">
+      <div className="flex flex-col justify-between p-6 bg-theme-surface rounded-xl border border-theme-primary">
         <div className="flex justify-between items-start mb-6">
-          <p className="text-text-secondary text-sm font-medium">Storage</p>
-          <span className="material-symbols-outlined text-zinc-600 text-[20px]">cloud</span>
+          <p className="text-theme-secondary text-sm font-medium">Storage</p>
+          <span className="material-symbols-outlined text-theme-muted text-[20px]">cloud</span>
         </div>
         <div className="flex items-end gap-3">
-          <h3 className="text-3xl font-light text-white">
+          <h3 className="text-3xl font-light text-theme-primary">
             {storage.pct}
-            <span className="text-zinc-600 text-xl">%</span>
+            <span className="text-theme-muted text-xl">%</span>
           </h3>
         </div>
-        <div className="w-full bg-zinc-900 h-0.5 mt-4">
+        <div className="w-full bg-theme-elevated h-0.5 mt-4">
           <div className="bg-primary h-full" style={{ width: `${storage.pct}%` }}></div>
         </div>
-        <p className="text-[10px] text-text-secondary mt-3 font-mono">
+        <p className="text-[10px] text-theme-secondary mt-3 font-mono">
           ~{Math.round(storage.bytes / 1024)} KB used
         </p>
       </div>
 
       {/* Streak Card */}
-      <div className="flex flex-col justify-between p-6 bg-surface-dark rounded-xl border border-border-dark/50">
+      <div className="flex flex-col justify-between p-6 bg-theme-surface rounded-xl border border-theme-primary">
         <div className="flex justify-between items-start mb-6">
-          <p className="text-text-secondary text-sm font-medium">Streak</p>
-          <span className="material-symbols-outlined text-zinc-600 text-[20px]">local_fire_department</span>
+          <p className="text-theme-secondary text-sm font-medium">Streak</p>
+          <span className="material-symbols-outlined text-theme-muted text-[20px]">local_fire_department</span>
         </div>
         <div className="flex items-end gap-3">
-          <h3 className="text-3xl font-light text-white">
+          <h3 className="text-3xl font-light text-theme-primary">
             {streak.current}
-            <span className="text-zinc-600 text-xl">Days</span>
+            <span className="text-theme-muted text-xl">Days</span>
           </h3>
         </div>
-        <p className="text-xs text-text-secondary mt-4 font-mono">BEST: {streak.best}</p>
+        <p className="text-xs text-theme-secondary mt-4 font-mono">BEST: {streak.best}</p>
       </div>
 
       {/* Completed Card */}
-      <div className="flex flex-col justify-between p-6 bg-surface-dark rounded-xl border border-border-dark/50">
+      <div className="flex flex-col justify-between p-6 bg-theme-surface rounded-xl border border-theme-primary">
         <div className="flex justify-between items-start mb-6">
-          <p className="text-text-secondary text-sm font-medium">Completed</p>
-          <span className="material-symbols-outlined text-zinc-600 text-[20px]">task_alt</span>
+          <p className="text-theme-secondary text-sm font-medium">Completed</p>
+          <span className="material-symbols-outlined text-theme-muted text-[20px]">task_alt</span>
         </div>
         <div className="flex flex-col gap-2">
           <div className="flex items-end gap-3">
-            <h3 className="text-3xl font-light text-white">{completed.tasksDone}</h3>
-            <span className="text-zinc-600 text-xs font-mono">tasks done</span>
+            <h3 className="text-3xl font-light text-theme-primary">{completed.tasksDone}</h3>
+            <span className="text-theme-muted text-xs font-mono">tasks done</span>
           </div>
           <div className="flex items-end gap-3">
-            <h3 className="text-2xl font-light text-white">{completed.remindersDone}</h3>
-            <span className="text-zinc-600 text-xs font-mono">reminders done</span>
+            <h3 className="text-2xl font-light text-theme-primary">{completed.remindersDone}</h3>
+            <span className="text-theme-muted text-xs font-mono">reminders done</span>
           </div>
         </div>
-        <p className="text-[10px] text-text-secondary mt-4 font-mono">
+        <p className="text-[10px] text-theme-secondary mt-4 font-mono">
           Keep the streak alive.
         </p>
       </div>
@@ -201,9 +201,9 @@ function AccountSection() {
   return (
     <section>
       <div className="mb-5">
-        <h2 className="text-lg font-medium text-white">Account</h2>
+        <h2 className="text-lg font-medium text-theme-primary">Account</h2>
       </div>
-      <div className="p-6 bg-surface-dark rounded-xl border border-border-dark/50 flex flex-col gap-8">
+      <div className="p-6 bg-theme-surface rounded-xl border border-theme-primary flex flex-col gap-8">
         <div className="flex items-center gap-6">
           {/* Profile Image */}
           <div className="relative group cursor-pointer shrink-0">
@@ -218,9 +218,9 @@ function AccountSection() {
           {/* Display Name Input */}
           <div className="flex flex-col gap-6 w-full max-w-md">
             <div className="flex flex-col gap-1">
-              <label className="text-[10px] uppercase tracking-widest text-zinc-500 font-bold">Display Name</label>
+              <label className="text-[10px] uppercase tracking-widest text-theme-muted font-bold">Display Name</label>
               <input 
-                className="bg-transparent border-0 border-b border-zinc-800 focus:border-primary focus:ring-0 px-0 py-2 text-white font-normal placeholder-zinc-700 transition-colors w-full" 
+                className="bg-transparent border-0 border-b border-theme-primary focus:border-primary focus:ring-0 px-0 py-2 text-theme-primary font-normal placeholder-theme-muted transition-colors w-full" 
                 type="text" 
                 value={user.displayName}
                 onChange={handleNameChange}
@@ -235,16 +235,16 @@ function AccountSection() {
 
 // Appearance Section Component
 function AppearanceSection() {
-  const { user, updatePreferences } = useUser();
+  const { theme, setTheme, isDark } = useTheme();
 
-  const handleThemeChange = (theme) => {
-    updatePreferences({ theme });
+  const handleThemeChange = (newTheme) => {
+    setTheme(newTheme);
   };
 
   return (
     <section className="flex flex-col gap-5">
-      <h2 className="text-lg font-medium text-white">Appearance</h2>
-      <div className="bg-surface-dark rounded-xl border border-border-dark/50 p-6 flex flex-col gap-6">
+      <h2 className="text-lg font-medium text-theme-primary">Appearance</h2>
+      <div className="bg-theme-surface rounded-xl border border-theme-primary p-6 flex flex-col gap-6">
         <div className="grid grid-cols-2 gap-4">
           {/* Light Theme Option */}
           <label className="cursor-pointer group">
@@ -253,28 +253,36 @@ function AppearanceSection() {
               name="theme" 
               type="radio" 
               value="light"
-              checked={user.preferences?.theme === 'light'}
+              checked={theme === 'light'}
               onChange={() => handleThemeChange('light')}
             />
-            <div className="rounded-lg border border-zinc-800 peer-checked:border-zinc-500 bg-black p-4 flex flex-col items-center gap-3 transition-all opacity-50 peer-checked:opacity-100">
-              <span className="material-symbols-outlined text-zinc-400">light_mode</span>
-              <span className="text-xs font-medium text-zinc-400">Light</span>
+            <div className={`rounded-lg border p-4 flex flex-col items-center gap-3 transition-all ${
+              theme === 'light' 
+                ? 'border-primary bg-primary/10' 
+                : 'border-theme-primary bg-theme-card opacity-60 hover:opacity-80'
+            }`}>
+              <span className={`material-symbols-outlined ${theme === 'light' ? 'text-primary' : 'text-theme-muted'}`}>light_mode</span>
+              <span className={`text-xs font-medium ${theme === 'light' ? 'text-primary' : 'text-theme-muted'}`}>Light</span>
             </div>
           </label>
 
-          {/* Dark Theme Option (Default Selected) */}
+          {/* Dark Theme Option */}
           <label className="cursor-pointer group">
             <input 
               className="peer sr-only" 
               name="theme" 
               type="radio" 
               value="dark"
-              checked={user.preferences?.theme === 'dark' || !user.preferences?.theme}
+              checked={theme === 'dark'}
               onChange={() => handleThemeChange('dark')}
             />
-            <div className="rounded-lg border border-zinc-800 peer-checked:border-primary peer-checked:text-primary bg-black p-4 flex flex-col items-center gap-3 transition-all">
-              <span className="material-symbols-outlined text-white peer-checked:text-primary">dark_mode</span>
-              <span className="text-xs font-medium text-white peer-checked:text-primary">Dark</span>
+            <div className={`rounded-lg border p-4 flex flex-col items-center gap-3 transition-all ${
+              theme === 'dark' 
+                ? 'border-primary bg-primary/10' 
+                : 'border-theme-primary bg-theme-card opacity-60 hover:opacity-80'
+            }`}>
+              <span className={`material-symbols-outlined ${theme === 'dark' ? 'text-primary' : 'text-theme-muted'}`}>dark_mode</span>
+              <span className={`text-xs font-medium ${theme === 'dark' ? 'text-primary' : 'text-theme-muted'}`}>Dark</span>
             </div>
           </label>
         </div>

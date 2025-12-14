@@ -16,7 +16,7 @@ export default function GlobalNavigation() {
 
   return (
     <nav
-      className="fixed bottom-0 w-full z-[100] md:hidden bg-card-dark border-t border-white/10 p-2 flex justify-around items-center"
+      className="fixed bottom-0 w-full z-[100] md:hidden bg-theme-card border-t border-theme-primary p-2 flex justify-around items-center transition-colors duration-200"
       data-testid="mobile-navigation"
     >
       {navItems.map((item) => (
@@ -24,7 +24,7 @@ export default function GlobalNavigation() {
           key={item.path}
           to={item.path}
           className={`flex flex-col items-center gap-1 p-2 rounded-lg ${
-            isActive(item.path) ? 'text-primary' : 'text-text-muted'
+            isActive(item.path) ? 'text-primary' : 'text-theme-muted'
           }`}
           data-testid={`nav-${item.label.toLowerCase()}`}
         >

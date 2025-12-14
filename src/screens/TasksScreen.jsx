@@ -27,17 +27,17 @@ export default function TasksScreen() {
   const dateString = selectedDate.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
 
   return (
-    <div className="flex h-full w-full bg-background-dark">
+    <div className="flex h-full w-full bg-theme-primary transition-colors duration-200">
       <DesktopSidebar />
       <div className="flex-1 flex flex-col h-full overflow-hidden relative">
         <SimpleHeader title="Task Manager" />
-        <main className="flex-1 flex flex-col relative overflow-hidden bg-black h-full">
+        <main className="flex-1 flex flex-col relative overflow-hidden bg-theme-primary h-full">
           <div className="relative z-10 flex flex-col h-full overflow-y-auto overflow-x-hidden pb-20">
             {/* Header with date and day selector */}
-            <header className="flex flex-col md:flex-row md:items-end justify-between px-8 py-8 gap-6 border-b border-[#27272a]/50">
+            <header className="flex flex-col md:flex-row md:items-end justify-between px-8 py-8 gap-6 border-b border-theme-primary">
               <div className="flex flex-col gap-1">
-                <h2 className="text-text-muted text-xs font-medium uppercase tracking-widest">{dateString}</h2>
-                <h1 className="text-2xl font-semibold text-white tracking-tight">Task Manager</h1>
+                <h2 className="text-theme-muted text-xs font-medium uppercase tracking-widest">{dateString}</h2>
+                <h1 className="text-2xl font-semibold text-theme-primary tracking-tight">Task Manager</h1>
               </div>
               {/* Day Selector */}
               <div className="flex items-center gap-1 overflow-x-auto no-scrollbar">
@@ -48,7 +48,7 @@ export default function TasksScreen() {
                     className={`flex flex-col items-center justify-center w-10 h-14 rounded-lg shrink-0 transition-colors ${
                         isSameDay(dayItem.fullDate, selectedDate)
                         ? 'bg-primary text-white shadow-neon'
-                        : 'text-text-muted hover:text-white hover:bg-white/5'
+                        : 'text-theme-muted hover:text-theme-primary hover:bg-[var(--hover-overlay)]'
                     }`}
                   >
                     <span className={`text-[10px] font-medium ${isSameDay(dayItem.fullDate, selectedDate) ? 'opacity-80' : ''}`}>
@@ -116,9 +116,9 @@ function ActiveFocusCard() {
     return (
       <div className="min-panel rounded-xl p-8 relative overflow-hidden group hover:border-primary/50 transition-all duration-300">
         <div className="flex flex-col items-center justify-center py-12 text-center">
-          <span className="material-symbols-outlined text-4xl text-text-muted mb-4">task_alt</span>
-          <h2 className="text-xl font-medium text-white mb-2">No Active Task</h2>
-          <p className="text-text-muted text-sm">Start a task from your board to begin focusing</p>
+          <span className="material-symbols-outlined text-4xl text-theme-muted mb-4">task_alt</span>
+          <h2 className="text-xl font-medium text-theme-primary mb-2">No Active Task</h2>
+          <p className="text-theme-muted text-sm">Start a task from your board to begin focusing</p>
         </div>
       </div>
     );
@@ -129,18 +129,18 @@ function ActiveFocusCard() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
         <div>
           <div className="flex items-center gap-2 mb-3">
-            <span className={`w-1.5 h-1.5 rounded-full ${isRunning ? 'bg-primary animate-pulse' : isPaused ? 'bg-yellow-500' : 'bg-white/30'}`}></span>
-            <span className={`text-xs font-bold uppercase tracking-widest ${isRunning ? 'text-primary' : isPaused ? 'text-yellow-500' : 'text-text-muted'}`}>
+            <span className={`w-1.5 h-1.5 rounded-full ${isRunning ? 'bg-primary animate-pulse' : isPaused ? 'bg-yellow-500' : 'bg-theme-secondary'}`}></span>
+            <span className={`text-xs font-bold uppercase tracking-widest ${isRunning ? 'text-primary' : isPaused ? 'text-yellow-500' : 'text-theme-muted'}`}>
               {isRunning ? 'Active Focus' : isPaused ? 'Paused' : 'Ready to Focus'}
             </span>
           </div>
-          <h2 className="text-2xl font-medium text-white leading-tight">{task.title}</h2>
+          <h2 className="text-2xl font-medium text-theme-primary leading-tight">{task.title}</h2>
         </div>
         <div className="mt-4 md:mt-0">
           <span className={`inline-flex items-center px-2 py-1 rounded border text-[10px] uppercase font-bold tracking-wider ${
             task.priority === 'high' 
               ? 'border-red-500/20 bg-red-500/10 text-red-400' 
-              : 'border-white/10 bg-white/5 text-text-muted'
+              : 'border-theme-primary bg-[var(--hover-overlay)] text-theme-muted'
           }`}>
             {task.priority || 'Normal'} Priority
           </span>
@@ -149,14 +149,14 @@ function ActiveFocusCard() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
         <div className="flex flex-col gap-2">
           <div className="flex items-baseline gap-3">
-            <span className="text-5xl font-mono font-light text-white tracking-tighter">
+            <span className="text-5xl font-mono font-light text-theme-primary tracking-tighter">
               {formattedTime.minutes}:{formattedTime.seconds}
             </span>
-            <span className="text-text-muted text-xs uppercase tracking-wider">
+            <span className="text-theme-muted text-xs uppercase tracking-wider">
               {isRunning ? 'remaining' : isPaused ? 'paused' : 'ready'}
             </span>
           </div>
-          <div className="h-[2px] w-full bg-[#27272a] mt-2">
+          <div className="h-[2px] w-full bg-theme-elevated mt-2">
             <div 
               className="h-full bg-primary shadow-[0_0_10px_rgba(124,58,237,0.5)] transition-all duration-300" 
               style={{ width: `${progress}%` }}
@@ -168,7 +168,7 @@ function ActiveFocusCard() {
             onClick={handlePauseResume}
             className={`w-full py-3 rounded-lg font-bold text-sm transition-all flex items-center justify-center gap-2 ${
               isRunning 
-                ? 'bg-white text-black hover:bg-gray-200' 
+                ? 'bg-theme-primary text-[var(--bg-primary)] hover:opacity-80' 
                 : 'bg-primary text-white hover:bg-primary/80'
             }`}
           >
@@ -240,15 +240,15 @@ function TaskBoard({ selectedDate }) {
   return (
     <>
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-medium text-white">Board</h2>
+        <h2 className="text-lg font-medium text-theme-primary">Board</h2>
         <div className="flex gap-2">
           <button 
             onClick={() => setIsAddMode(!isAddMode)}
-            className="p-2 hover:bg-white/5 rounded-lg text-text-muted hover:text-white transition-colors"
+            className="p-2 hover:bg-[var(--hover-overlay)] rounded-lg text-theme-muted hover:text-theme-primary transition-colors"
           >
             <span className="material-symbols-outlined text-[20px]">{isAddMode ? 'close' : 'add'}</span>
           </button>
-          <button className="p-2 hover:bg-white/5 rounded-lg text-text-muted hover:text-white transition-colors">
+          <button className="p-2 hover:bg-[var(--hover-overlay)] rounded-lg text-theme-muted hover:text-theme-primary transition-colors">
             <span className="material-symbols-outlined text-[20px]">tune</span>
           </button>
         </div>
@@ -256,20 +256,20 @@ function TaskBoard({ selectedDate }) {
 
       {/* Add Task Form */}
       {isAddMode && (
-        <form onSubmit={handleAddTask} className="flex flex-col gap-3 p-4 bg-white/5 rounded-lg">
+        <form onSubmit={handleAddTask} className="flex flex-col gap-3 p-4 bg-[var(--hover-overlay)] rounded-lg">
           <input
             type="text"
             placeholder="Task title..."
             value={newTaskTitle}
             onChange={(e) => setNewTaskTitle(e.target.value)}
-            className="bg-transparent border border-white/10 rounded px-3 py-2 text-white text-sm focus:border-primary focus:outline-none"
+            className="bg-transparent border border-theme-primary rounded px-3 py-2 text-theme-primary text-sm focus:border-primary focus:outline-none"
             autoFocus
           />
           <div className="flex gap-2">
             <select
               value={newTaskLabel}
               onChange={(e) => setNewTaskLabel(e.target.value)}
-              className="bg-black border border-white/10 rounded px-3 py-2 text-white text-sm focus:border-primary focus:outline-none"
+              className="bg-theme-card border border-theme-primary rounded px-3 py-2 text-theme-primary text-sm focus:border-primary focus:outline-none"
             >
               <option value="DEV">DEV</option>
               <option value="DESIGN">DESIGN</option>
@@ -280,7 +280,7 @@ function TaskBoard({ selectedDate }) {
               type="time"
               value={newTaskTime}
               onChange={(e) => setNewTaskTime(e.target.value)}
-              className="bg-black border border-white/10 rounded px-3 py-2 text-white text-sm focus:border-primary focus:outline-none w-28"
+              className="bg-theme-card border border-theme-primary rounded px-3 py-2 text-theme-primary text-sm focus:border-primary focus:outline-none w-28"
               aria-label="Due time"
             />
             <button
@@ -297,11 +297,11 @@ function TaskBoard({ selectedDate }) {
         {/* To Do Section */}
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-2 mb-1">
-            <div className="w-1 h-1 rounded-full bg-white"></div>
-            <h3 className="text-xs font-bold text-text-muted uppercase tracking-wider">To Do ({todoTasks.length})</h3>
+            <div className="w-1 h-1 rounded-full bg-theme-primary"></div>
+            <h3 className="text-xs font-bold text-theme-muted uppercase tracking-wider">To Do ({todoTasks.length})</h3>
           </div>
           {todoTasks.length === 0 ? (
-            <p className="text-text-muted text-xs text-center py-4">No tasks to do</p>
+            <p className="text-theme-muted text-xs text-center py-4">No tasks to do</p>
           ) : (
             todoTasks.map((task) => (
               <TaskCard key={task.id} task={task} onStart={startTask} onDelete={deleteTask} />
@@ -377,11 +377,11 @@ function TaskCard({ task, isActive, isDone, onStart, onDelete }) {
         </div>
       </div>
       <p className={`text-sm font-medium mb-3 transition-colors ${
-        isDone ? 'text-text-muted line-through' : 'text-white group-hover:text-primary-hover'
+        isDone ? 'text-theme-muted line-through' : 'text-theme-primary group-hover:text-primary-hover'
       }`}>
         {task.title}
       </p>
-      <div className="flex items-center gap-4 text-xs text-text-muted">
+      <div className="flex items-center gap-4 text-xs text-theme-muted">
         <span className="flex items-center gap-1.5">
           <span className="material-symbols-outlined text-[14px]">calendar_today</span>
           {task.dueDate}

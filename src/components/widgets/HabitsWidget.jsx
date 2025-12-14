@@ -9,7 +9,7 @@ function HabitItem({ habit, onIncrement }) {
   const progress = habit.current / habit.target;
   const offset = CIRCUMFERENCE * (1 - progress);
   const isComplete = habit.current >= habit.target;
-  const colorClass = habit.color === 'primary' ? 'text-primary' : 'text-white';
+  const colorClass = habit.color === 'primary' ? 'text-primary' : 'text-theme-primary';
 
   return (
     <div 
@@ -20,13 +20,14 @@ function HabitItem({ habit, onIncrement }) {
         <svg className="transform -rotate-90 size-10">
           {/* Background circle */}
           <circle 
-            className="text-white/5" 
+            className="text-theme-subtle" 
             cx="20" 
             cy="20" 
             fill="transparent" 
             r="18" 
             stroke="currentColor" 
             strokeWidth="2"
+            style={{ color: 'var(--border-subtle)' }}
           />
           {/* Progress circle */}
           <circle 
@@ -42,20 +43,20 @@ function HabitItem({ habit, onIncrement }) {
             strokeWidth="2"
           />
         </svg>
-        <span className={`material-symbols-outlined absolute text-xs ${isComplete ? 'text-green-400' : 'text-white'}`}>
+        <span className={`material-symbols-outlined absolute text-xs ${isComplete ? 'text-green-400' : 'text-theme-primary'}`}>
           {isComplete ? 'check' : habit.icon}
         </span>
       </div>
       <div className="flex flex-col flex-1">
-        <span className={`text-white font-medium text-sm group-hover:${habit.color === 'primary' ? 'text-primary' : 'text-white'} transition-colors`}>
+        <span className={`text-theme-primary font-medium text-sm group-hover:${habit.color === 'primary' ? 'text-primary' : 'text-theme-primary'} transition-colors`}>
           {habit.name}
         </span>
-        <span className="text-text-muted text-[10px] font-mono">
+        <span className="text-theme-muted text-[10px] font-mono">
           {habit.current}{habit.unit} / {habit.target}{habit.unit}
         </span>
       </div>
       {!isComplete && (
-        <span className="text-text-muted text-[10px] opacity-0 group-hover:opacity-100 transition-opacity">
+        <span className="text-theme-muted text-[10px] opacity-0 group-hover:opacity-100 transition-opacity">
           +{habit.increment}{habit.unit}
         </span>
       )}
@@ -86,13 +87,13 @@ function AddHabitForm({ onAdd, onCancel }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-3 p-3 bg-white/5 rounded-lg">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-3 p-3 bg-[var(--hover-overlay)] rounded-lg">
       <input
         type="text"
         placeholder="Habit name"
         value={name}
         onChange={(e) => setName(e.target.value)}
-        className="bg-transparent border border-white/10 rounded px-3 py-2 text-white text-sm focus:border-primary focus:outline-none"
+        className="bg-transparent border border-theme-primary rounded px-3 py-2 text-theme-primary text-sm focus:border-primary focus:outline-none"
         autoFocus
       />
       <div className="flex gap-2">
@@ -101,14 +102,14 @@ function AddHabitForm({ onAdd, onCancel }) {
           placeholder="Target"
           value={target}
           onChange={(e) => setTarget(e.target.value)}
-          className="bg-transparent border border-white/10 rounded px-3 py-2 text-white text-sm focus:border-primary focus:outline-none flex-1"
+          className="bg-transparent border border-theme-primary rounded px-3 py-2 text-theme-primary text-sm focus:border-primary focus:outline-none flex-1"
         />
         <input
           type="text"
           placeholder="Unit"
           value={unit}
           onChange={(e) => setUnit(e.target.value)}
-          className="bg-transparent border border-white/10 rounded px-3 py-2 text-white text-sm focus:border-primary focus:outline-none w-16"
+          className="bg-transparent border border-theme-primary rounded px-3 py-2 text-theme-primary text-sm focus:border-primary focus:outline-none w-16"
         />
       </div>
       <div className="flex gap-2">
@@ -121,7 +122,7 @@ function AddHabitForm({ onAdd, onCancel }) {
         <button
           type="button"
           onClick={onCancel}
-          className="flex-1 bg-white/10 text-white text-xs font-medium py-2 rounded hover:bg-white/20 transition-colors"
+          className="flex-1 bg-[var(--hover-overlay)] text-theme-primary text-xs font-medium py-2 rounded hover:opacity-80 transition-colors border border-theme-primary"
         >
           Cancel
         </button>
@@ -140,10 +141,10 @@ export default function HabitsWidget() {
   };
 
   return (
-    <div className="xl:col-span-1 rounded-3xl bg-card-dark border border-white/5 p-8 flex flex-col justify-between">
+    <div className="xl:col-span-1 rounded-3xl bg-theme-card border border-theme-subtle p-8 flex flex-col justify-between transition-colors duration-200">
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
-        <h3 className="text-white text-lg font-light">Habits</h3>
+        <h3 className="text-theme-primary text-lg font-light">Habits</h3>
         <div className="flex items-center gap-2">
           <button
             type="button"
@@ -151,7 +152,7 @@ export default function HabitsWidget() {
               const ok = window.confirm('Archive today and reset all habit progress?');
               if (ok) resetDailyProgress();
             }}
-            className="text-text-muted hover:text-white transition-colors"
+            className="text-theme-muted hover:text-theme-primary transition-colors"
             aria-label="Archive today and reset habits"
             title="Archive today & reset"
           >
@@ -160,7 +161,7 @@ export default function HabitsWidget() {
           <button 
             type="button"
             onClick={() => setIsAddMode(!isAddMode)}
-            className="text-text-muted hover:text-white transition-colors"
+            className="text-theme-muted hover:text-theme-primary transition-colors"
             aria-label={isAddMode ? 'Close add habit form' : 'Add habit'}
           >
             <span className="material-symbols-outlined text-[20px]">
@@ -183,7 +184,7 @@ export default function HabitsWidget() {
       {/* Habits List */}
       <div className="flex flex-col gap-6">
         {habits.length === 0 ? (
-          <p className="text-text-muted text-sm text-center py-4">
+          <p className="text-theme-muted text-sm text-center py-4">
             No habits yet. Click + to add one!
           </p>
         ) : (

@@ -77,7 +77,7 @@ export default function RemindersScreen() {
   };
 
   return (
-    <div className="flex h-full w-full bg-background-dark">
+    <div className="flex h-full w-full bg-theme-primary transition-colors duration-200">
       <DesktopSidebar />
       <div className="flex-1 flex flex-col h-full overflow-hidden relative">
         <SimpleHeader title="Reminders" />
@@ -87,10 +87,10 @@ export default function RemindersScreen() {
             <div className="lg:col-span-7 flex flex-col gap-12">
               {/* Greeting and Current Time */}
               <div className="flex flex-col gap-2">
-                <h1 className="text-3xl md:text-5xl font-extralight tracking-tight text-white">
+                <h1 className="text-3xl md:text-5xl font-extralight tracking-tight text-theme-primary">
                   {greeting}, {firstName}
                 </h1>
-                <div className="flex items-center gap-2 text-text-secondary font-mono text-sm uppercase tracking-wide">
+                <div className="flex items-center gap-2 text-theme-secondary font-mono text-sm uppercase tracking-wide">
                   <span className="size-1.5 bg-primary rounded-full"></span>
                   <span>{currentTimeLabel}</span>
                 </div>
@@ -139,7 +139,7 @@ function TimeDial({ hour, minute, ampm, onChangeHour, onChangeMinute, onChangeAm
   const safeMinute = Math.min(59, Math.max(0, Number(minute) || 0));
 
   return (
-    <div className="relative w-full aspect-[4/3] md:aspect-[2/1] lg:aspect-[16/9] flex flex-col items-center justify-center py-8 glass-panel rounded-3xl overflow-hidden group border-border-dark">
+    <div className="relative w-full aspect-[4/3] md:aspect-[2/1] lg:aspect-[16/9] flex flex-col items-center justify-center py-8 glass-panel rounded-3xl overflow-hidden group border-theme-primary transition-colors duration-200">
       {/* Background glow effect */}
       <div className="absolute inset-0 opacity-10 pointer-events-none">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] bg-gradient-radial from-primary to-transparent blur-3xl"></div>
@@ -148,25 +148,25 @@ function TimeDial({ hour, minute, ampm, onChangeHour, onChangeMinute, onChangeAm
       <div className="relative z-10 flex flex-col items-center gap-8">
         {/* Dial with conic gradient */}
         <div className="relative size-60 md:size-64 rounded-full chrono-dial-bg p-[1px] shadow-2xl shadow-black/50">
-          <div className="w-full h-full bg-black rounded-full flex flex-col items-center justify-center relative">
-            <span className="text-text-secondary text-[10px] uppercase tracking-[0.2em] mb-4 font-medium opacity-60">Set Time</span>
-            <div className="flex items-baseline text-white font-mono leading-none">
+          <div className="w-full h-full bg-theme-card rounded-full flex flex-col items-center justify-center relative">
+            <span className="text-theme-secondary text-[10px] uppercase tracking-[0.2em] mb-4 font-medium opacity-60">Set Time</span>
+            <div className="flex items-baseline text-theme-primary font-mono leading-none">
               <input
                 aria-label="Hour"
                 inputMode="numeric"
                 value={`${safeHour}`.padStart(2, '0')}
                 onChange={(e) => onChangeHour(e.target.value.replace(/[^0-9]/g, ''))}
                 onBlur={() => onChangeHour(String(Math.min(12, Math.max(1, Number(safeHour) || 12))))}
-                className="w-[2.2ch] md:w-[2.4ch] bg-transparent text-6xl md:text-7xl font-light tracking-tighter text-white text-center focus:outline-none"
+                className="w-[2.2ch] md:w-[2.4ch] bg-transparent text-6xl md:text-7xl font-light tracking-tighter text-theme-primary text-center focus:outline-none"
               />
-              <span className="text-6xl md:text-7xl font-light tracking-tighter text-border-dark mx-1">:</span>
+              <span className="text-6xl md:text-7xl font-light tracking-tighter text-theme-muted mx-1">:</span>
               <input
                 aria-label="Minute"
                 inputMode="numeric"
                 value={`${safeMinute}`.padStart(2, '0')}
                 onChange={(e) => onChangeMinute(e.target.value.replace(/[^0-9]/g, ''))}
                 onBlur={() => onChangeMinute(String(Math.min(59, Math.max(0, Number(safeMinute) || 0))))}
-                className="w-[2.2ch] md:w-[2.4ch] bg-transparent text-6xl md:text-7xl font-light tracking-tighter text-white text-center focus:outline-none"
+                className="w-[2.2ch] md:w-[2.4ch] bg-transparent text-6xl md:text-7xl font-light tracking-tighter text-theme-primary text-center focus:outline-none"
               />
             </div>
             {/* AM/PM Toggle */}
@@ -174,10 +174,10 @@ function TimeDial({ hour, minute, ampm, onChangeHour, onChangeMinute, onChangeAm
               <button
                 type="button"
                 onClick={() => onChangeAmPm('AM')}
-                className={`w-10 h-6 flex items-center justify-center rounded-full text-[10px] font-bold transition-colors border border-border-dark ${
+                className={`w-10 h-6 flex items-center justify-center rounded-full text-[10px] font-bold transition-colors border border-theme-primary ${
                   ampm === 'AM'
                     ? 'bg-primary text-white shadow-[0_0_15px_rgba(124,58,237,0.4)]'
-                    : 'bg-accent-dark text-text-secondary hover:text-white'
+                    : 'bg-theme-elevated text-theme-secondary hover:text-theme-primary'
                 }`}
               >
                 AM
@@ -185,10 +185,10 @@ function TimeDial({ hour, minute, ampm, onChangeHour, onChangeMinute, onChangeAm
               <button
                 type="button"
                 onClick={() => onChangeAmPm('PM')}
-                className={`w-10 h-6 flex items-center justify-center rounded-full text-[10px] font-bold transition-colors border border-border-dark ${
+                className={`w-10 h-6 flex items-center justify-center rounded-full text-[10px] font-bold transition-colors border border-theme-primary ${
                   ampm === 'PM'
                     ? 'bg-primary text-white shadow-[0_0_15px_rgba(124,58,237,0.4)]'
-                    : 'bg-accent-dark text-text-secondary hover:text-white'
+                    : 'bg-theme-elevated text-theme-secondary hover:text-theme-primary'
                 }`}
               >
                 PM
@@ -206,9 +206,9 @@ function ReminderInput({ title, onChangeTitle, onSubmit, onRequestNotifications 
   return (
     <div className="flex flex-col gap-8">
       {/* Task name input with mic button */}
-      <div className="flex w-full items-center border-b border-border-dark focus-within:border-primary transition-colors pb-2">
+      <div className="flex w-full items-center border-b border-theme-primary focus-within:border-primary transition-colors pb-2">
         <input
-          className="w-full bg-transparent border-none text-white placeholder-text-secondary/50 px-0 py-2 text-2xl font-light focus:ring-0 focus:outline-none"
+          className="w-full bg-transparent border-none text-theme-primary placeholder-theme-secondary/50 px-0 py-2 text-2xl font-light focus:ring-0 focus:outline-none"
           placeholder="Task name..."
           type="text"
           value={title}
@@ -222,7 +222,7 @@ function ReminderInput({ title, onChangeTitle, onSubmit, onRequestNotifications 
         />
         <button
           type="button"
-          className="px-2 text-text-secondary hover:text-primary transition-colors"
+          className="px-2 text-theme-secondary hover:text-primary transition-colors"
           aria-label="Enable notifications"
           onClick={onRequestNotifications}
         >
@@ -235,7 +235,7 @@ function ReminderInput({ title, onChangeTitle, onSubmit, onRequestNotifications 
         type="button"
         onClick={onSubmit}
         disabled={!title.trim()}
-        className="mt-6 w-full py-4 rounded-2xl bg-white text-black hover:bg-primary hover:text-white font-semibold text-sm uppercase tracking-widest transition-all duration-300 flex items-center justify-center gap-3 disabled:opacity-60 disabled:cursor-not-allowed"
+        className="mt-6 w-full py-4 rounded-2xl bg-primary text-white hover:bg-primary/80 font-semibold text-sm uppercase tracking-widest transition-all duration-300 flex items-center justify-center gap-3 disabled:opacity-60 disabled:cursor-not-allowed"
       >
         <span className="material-symbols-outlined">add_alarm</span>
         Set Reminder
@@ -250,21 +250,21 @@ function NextUpReminders({ nextUp, upcoming, overdue, onToggleComplete, onDelete
   return (
     <>
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-border-dark pb-4">
-        <h3 className="text-lg font-light text-white">Next Up</h3>
+      <div className="flex items-center justify-between border-b border-theme-primary pb-4">
+        <h3 className="text-lg font-light text-theme-primary">Next Up</h3>
         {nextUp ? (
           <span className="text-[10px] font-mono text-primary bg-primary/10 px-2 py-1 rounded border border-primary/20">
             {formatTime24(nextUp.dueAt)}
           </span>
         ) : (
-          <span className="text-[10px] font-mono text-text-secondary">No reminders</span>
+          <span className="text-[10px] font-mono text-theme-secondary">No reminders</span>
         )}
       </div>
 
       {/* Reminders Timeline */}
       <div className="flex flex-col gap-4 relative">
         {/* Vertical connector line */}
-        <div className="absolute left-[23px] top-4 bottom-4 w-px bg-border-dark z-0"></div>
+        <div className="absolute left-[23px] top-4 bottom-4 w-px bg-theme-primary z-0"></div>
 
         {overdue.length > 0 && (
           <div className="text-[10px] uppercase tracking-widest text-red-400 font-bold mt-1">Overdue</div>
@@ -282,7 +282,7 @@ function NextUpReminders({ nextUp, upcoming, overdue, onToggleComplete, onDelete
         ))}
 
         {items.length === 0 ? (
-          <div className="text-text-secondary text-sm py-6 text-center">No reminders yet. Add one on the left.</div>
+          <div className="text-theme-secondary text-sm py-6 text-center">No reminders yet. Add one on the left.</div>
         ) : (
           items.map((reminder) => (
             <ReminderCard
@@ -305,19 +305,19 @@ function ReminderCard({ reminder, isActive, isOverdue, onToggleComplete, onDelet
   return (
     <div className="relative z-10 group">
       <div
-        className={`${isActive ? 'bg-surface-dark' : 'bg-black'} border border-border-dark p-4 rounded-xl flex items-center justify-between transition-all hover:border-primary/30 hover:bg-accent-dark`}
+        className={`${isActive ? 'bg-theme-surface' : 'bg-theme-card'} border border-theme-primary p-4 rounded-xl flex items-center justify-between transition-all hover:border-primary/30 hover:bg-theme-elevated`}
       >
         <div className="flex items-center gap-4">
           {/* Icon circle */}
           <button
             type="button"
             onClick={() => onToggleComplete(reminder.id)}
-            className={`size-12 rounded-full bg-black border ${
+            className={`size-12 rounded-full bg-theme-card border ${
               isActive
                 ? 'border-primary text-primary shadow-[0_0_10px_rgba(124,58,237,0.2)]'
                 : isOverdue
                 ? 'border-red-500/30 text-red-400'
-                : 'border-border-dark text-text-secondary'
+                : 'border-theme-primary text-theme-secondary'
             } flex items-center justify-center transition-colors hover:border-primary/40 hover:text-primary`}
             aria-label={reminder.isCompleted ? 'Mark reminder as not completed' : 'Mark reminder as completed'}
           >
@@ -328,12 +328,12 @@ function ReminderCard({ reminder, isActive, isOverdue, onToggleComplete, onDelet
           <div className={isActive ? '' : 'opacity-70 group-hover:opacity-100 transition-opacity'}>
             <p
               className={`text-xl font-medium ${
-                isActive ? 'text-white' : isOverdue ? 'text-red-300' : 'text-text-secondary'
+                isActive ? 'text-theme-primary' : isOverdue ? 'text-red-300' : 'text-theme-secondary'
               } font-mono leading-none`}
             >
               {formatTime24(reminder.dueAt)}
             </p>
-            <p className={`text-xs mt-1 ${reminder.isCompleted ? 'text-text-muted line-through' : 'text-text-secondary'}`}>
+            <p className={`text-xs mt-1 ${reminder.isCompleted ? 'text-theme-muted line-through' : 'text-theme-secondary'}`}>
               {reminder.title}
             </p>
           </div>
@@ -344,7 +344,7 @@ function ReminderCard({ reminder, isActive, isOverdue, onToggleComplete, onDelet
             <button
               type="button"
               onClick={() => onSnooze(reminder.id, 10)}
-              className="p-2 rounded-lg text-text-secondary hover:text-white hover:bg-white/5"
+              className="p-2 rounded-lg text-theme-secondary hover:text-theme-primary hover:bg-[var(--hover-overlay)]"
               aria-label="Snooze 10 minutes"
             >
               <span className="material-symbols-outlined text-[18px]">snooze</span>

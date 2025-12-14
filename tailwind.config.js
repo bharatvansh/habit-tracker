@@ -10,6 +10,7 @@ export default {
         'primary': '#7c3aed',
         'primary-dim': '#5b21b6',
         'primary-hover': '#6d28d9',
+        // Dark mode colors
         'background-dark': '#000000',
         'card-dark': '#09090b',
         'surface-dark': '#0a0a0a',
@@ -18,6 +19,14 @@ export default {
         'text-muted': '#52525b',
         'text-secondary': '#71717a',
         'accent-dark': '#18181b',
+        // Light mode colors
+        'background-light': '#fafafa',
+        'card-light': '#ffffff',
+        'surface-light': '#f4f4f5',
+        'border-light': '#e4e4e7',
+        'text-light-main': '#18181b',
+        'text-light-muted': '#71717a',
+        'text-light-secondary': '#a1a1aa',
       },
       fontFamily: {
         'display': ['Space Grotesk', 'sans-serif'],

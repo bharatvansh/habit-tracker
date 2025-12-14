@@ -77,7 +77,7 @@ export default function DashboardScreen() {
   };
 
   return (
-    <div className="flex h-full w-full bg-background-dark">
+    <div className="flex h-full w-full bg-theme-primary transition-colors duration-200">
       <DesktopSidebar />
       <div className="flex-1 flex flex-col h-full overflow-hidden relative">
         <SimpleHeader title="Dashboard" />
@@ -87,11 +87,11 @@ export default function DashboardScreen() {
             {/* Header Section */}
             <div className="flex flex-wrap justify-between items-end gap-4">
               <div>
-                <p className="text-text-muted text-sm font-medium tracking-widest uppercase mb-1">Overview</p>
-                <h1 className="text-white text-4xl lg:text-5xl font-light tracking-tight">{greeting}, {firstName}.</h1>
+                <p className="text-theme-muted text-sm font-medium tracking-widest uppercase mb-1">Overview</p>
+                <h1 className="text-theme-primary text-4xl lg:text-5xl font-light tracking-tight">{greeting}, {firstName}.</h1>
               </div>
               <div className="flex items-center gap-3">
-                <span className="text-xs text-text-muted font-mono bg-white/5 px-3 py-1.5 rounded-full border border-white/5">
+                <span className="text-xs text-theme-muted font-mono bg-[var(--hover-overlay)] px-3 py-1.5 rounded-full border border-theme-subtle">
                   {focusBlocksRemaining} Focus Block{focusBlocksRemaining !== 1 ? 's' : ''} remaining
                 </span>
               </div>
@@ -118,10 +118,10 @@ export default function DashboardScreen() {
           
           {/* Mobile Command Input */}
           <div className="w-full max-w-md mt-10 md:hidden pb-10">
-            <div className="pointer-events-auto flex items-center gap-3 bg-[#0a0a0a] border border-white/10 rounded-full p-1.5 pl-4 shadow-2xl shadow-black/80 hover:scale-[1.02] hover:border-primary/50 transition-all duration-300 group">
-              <span className="material-symbols-outlined text-text-muted text-[18px] group-hover:text-primary transition-colors">terminal</span>
+            <div className="pointer-events-auto flex items-center gap-3 bg-theme-surface border border-theme-primary rounded-full p-1.5 pl-4 shadow-2xl hover:scale-[1.02] hover:border-primary/50 transition-all duration-300 group">
+              <span className="material-symbols-outlined text-theme-muted text-[18px] group-hover:text-primary transition-colors">terminal</span>
               <input 
-                className="bg-transparent border-none text-white placeholder-text-muted focus:ring-0 w-full font-mono text-xs h-full py-2" 
+                className="bg-transparent border-none text-theme-primary placeholder-theme-muted focus:ring-0 w-full font-mono text-xs h-full py-2" 
                 placeholder="Ask Habitual... (task Buy milk | remind Stretch at 19:30)"
                 type="text"
                 value={command}
@@ -138,7 +138,7 @@ export default function DashboardScreen() {
               />
             </div>
             {status && (
-              <div className="mt-2 text-[10px] font-mono text-text-muted px-4">
+              <div className="mt-2 text-[10px] font-mono text-theme-muted px-4">
                 {status}
               </div>
             )}

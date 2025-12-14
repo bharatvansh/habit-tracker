@@ -133,7 +133,7 @@ export default function CalendarScreen() {
   }, [weekStart]);
 
   return (
-    <div className="flex h-full w-full bg-background-dark">
+    <div className="flex h-full w-full bg-theme-primary transition-colors duration-200">
       <DesktopSidebar />
       <div className="flex-1 flex flex-col h-full overflow-hidden relative">
         <SimpleHeader title="Calendar" />
@@ -143,14 +143,14 @@ export default function CalendarScreen() {
             {/* Header with Month/Year and Navigation */}
             <div className="flex flex-wrap items-center justify-between mb-6 gap-4">
               <div className="flex items-center gap-6">
-                <h1 className="text-3xl font-bold text-white tracking-tighter">
-                  {monthNames[month]} <span className="text-zinc-600 font-light">{year}</span>
+                <h1 className="text-3xl font-bold text-theme-primary tracking-tighter">
+                  {monthNames[month]} <span className="text-theme-muted font-light">{year}</span>
                 </h1>
                 <div className="flex items-center gap-1">
                   <button
                     type="button"
                     onClick={handlePrevMonth}
-                    className="p-1 hover:bg-white/5 rounded-full transition-colors text-zinc-500 hover:text-white"
+                    className="p-1 hover:bg-[var(--hover-overlay)] rounded-full transition-colors text-theme-muted hover:text-theme-primary"
                     aria-label="Previous month"
                   >
                     <span className="material-symbols-outlined text-[20px]">chevron_left</span>
@@ -158,7 +158,7 @@ export default function CalendarScreen() {
                   <button
                     type="button"
                     onClick={handleNextMonth}
-                    className="p-1 hover:bg-white/5 rounded-full transition-colors text-zinc-500 hover:text-white"
+                    className="p-1 hover:bg-[var(--hover-overlay)] rounded-full transition-colors text-theme-muted hover:text-theme-primary"
                     aria-label="Next month"
                   >
                     <span className="material-symbols-outlined text-[20px]">chevron_right</span>
@@ -166,14 +166,14 @@ export default function CalendarScreen() {
                   <button
                     type="button"
                     onClick={handleToday}
-                    className="ml-2 px-3 py-1 text-xs font-semibold text-zinc-400 hover:text-white border border-white/5 rounded-md hover:bg-white/5 transition-all"
+                    className="ml-2 px-3 py-1 text-xs font-semibold text-theme-secondary hover:text-theme-primary border border-theme-subtle rounded-md hover:bg-[var(--hover-overlay)] transition-all"
                   >
                     Today
                   </button>
                 </div>
               </div>
               {/* View Toggle (Month/Week/Day) */}
-              <div className="flex items-center p-0.5 bg-surface-dark border border-white/5 rounded-lg">
+              <div className="flex items-center p-0.5 bg-theme-surface border border-theme-subtle rounded-lg">
                 {['Month', 'Week', 'Day'].map((view) => (
                   <button
                     type="button"
@@ -181,8 +181,8 @@ export default function CalendarScreen() {
                     onClick={() => setViewMode(view)}
                     className={`px-4 py-1.5 text-xs font-semibold transition-colors ${
                       viewMode === view
-                        ? 'text-white bg-zinc-800 rounded-[5px] shadow-sm'
-                        : 'text-zinc-500 hover:text-zinc-300'
+                        ? 'text-theme-primary bg-theme-elevated rounded-[5px] shadow-sm'
+                        : 'text-theme-muted hover:text-theme-secondary'
                     }`}
                   >
                     {view}
@@ -196,8 +196,8 @@ export default function CalendarScreen() {
               <div className="flex-1 min-h-[420px]">
                 <div className="mb-4 flex items-center justify-between">
                   <div>
-                    <p className="text-text-muted text-xs font-bold tracking-widest uppercase">Selected</p>
-                    <h2 className="text-white text-xl font-medium">
+                    <p className="text-theme-muted text-xs font-bold tracking-widest uppercase">Selected</p>
+                    <h2 className="text-theme-primary text-xl font-medium">
                       {selectedDate.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })}
                     </h2>
                   </div>
@@ -215,7 +215,7 @@ export default function CalendarScreen() {
               <div className="flex-1 flex flex-col gap-3 min-h-[500px]">
                 <div className="grid grid-cols-7 gap-2 lg:gap-3">
                   {dayNames.map((day) => (
-                    <div key={day} className="text-center text-zinc-600 text-[10px] font-bold uppercase tracking-widest py-2">
+                    <div key={day} className="text-center text-theme-muted text-[10px] font-bold uppercase tracking-widest py-2">
                       {day}
                     </div>
                   ))}
@@ -242,7 +242,7 @@ export default function CalendarScreen() {
               <div className="flex-1 grid grid-cols-7 grid-rows-[auto_1fr] gap-2 lg:gap-3 lg:overflow-y-auto pr-2 pb-2 min-h-[500px]">
                 {/* Day Headers */}
                 {dayNames.map((day) => (
-                  <div key={day} className="text-center text-zinc-600 text-[10px] font-bold uppercase tracking-widest py-2">
+                  <div key={day} className="text-center text-theme-muted text-[10px] font-bold uppercase tracking-widest py-2">
                     {day}
                   </div>
                 ))}
@@ -295,9 +295,9 @@ function CalendarDayCell({ date, inCurrentMonth, selectedDate, onSelectDate, bad
   const isSelected = isSameDay(date, selectedDate);
   const day = date.getDate();
 
-  const base = `minimal-card bg-transparent border border-white/5 min-h-[80px] lg:min-h-[120px] rounded-lg p-2 flex flex-col gap-1 relative group cursor-pointer transition-colors`;
+  const base = `minimal-card bg-transparent border border-theme-subtle min-h-[80px] lg:min-h-[120px] rounded-lg p-2 flex flex-col gap-1 relative group cursor-pointer transition-colors`;
   const dim = inCurrentMonth ? '' : ' opacity-30';
-  const hover = ' hover:bg-white/5';
+  const hover = ' hover:bg-[var(--hover-overlay)]';
   const selected = isSelected ? ' border border-primary/40 bg-primary/5' : '';
   const today = isToday ? ' border border-primary/30' : '';
 
@@ -314,7 +314,7 @@ function CalendarDayCell({ date, inCurrentMonth, selectedDate, onSelectDate, bad
             {day}
           </span>
         ) : (
-          <span className={`text-xs font-semibold ${inCurrentMonth ? 'text-zinc-400 group-hover:text-white' : 'text-zinc-500'} transition-colors`}>
+          <span className={`text-xs font-semibold ${inCurrentMonth ? 'text-theme-secondary group-hover:text-theme-primary' : 'text-theme-muted'} transition-colors`}>
             {day}
           </span>
         )}
@@ -329,8 +329,8 @@ function CalendarDayCell({ date, inCurrentMonth, selectedDate, onSelectDate, bad
 
 function EventBadge({ badge, isToday }) {
   const colorClasses = {
-    zinc: 'bg-zinc-800/50 border-white/5 text-zinc-400',
-    primary: isToday ? 'bg-primary/20 border-primary/30 text-white' : 'bg-primary/20 border-primary/40 text-white',
+    zinc: 'bg-theme-elevated border-theme-subtle text-theme-secondary',
+    primary: isToday ? 'bg-primary/20 border-primary/30 text-theme-primary' : 'bg-primary/20 border-primary/40 text-theme-primary',
     'primary-light': 'bg-primary/10 border-primary/20 text-primary',
     green: 'bg-green-500/10 border-green-500/20 text-green-300',
     red: 'bg-red-500/10 border-red-500/20 text-red-300',
@@ -341,7 +341,7 @@ function EventBadge({ badge, isToday }) {
       {badge.icon ? (
         <span className="material-symbols-outlined text-[10px]">{badge.icon}</span>
       ) : (
-        <span className="size-1.5 rounded-full bg-zinc-500"></span>
+        <span className="size-1.5 rounded-full bg-theme-muted"></span>
       )}
       {badge.title}
     </div>
@@ -354,11 +354,11 @@ function UpNextPanel({ selectedDate, upNext, onAddEvent }) {
     : 'No items scheduled';
 
   return (
-    <div className="bg-card-dark border border-white/5 rounded-xl p-5 relative overflow-hidden group">
+    <div className="bg-theme-card border border-theme-subtle rounded-xl p-5 relative overflow-hidden group transition-colors duration-200">
       <div className="absolute -right-6 -top-6 w-32 h-32 bg-primary/10 rounded-full blur-[40px] pointer-events-none"></div>
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">Up Next</h3>
-        <button type="button" onClick={onAddEvent} className="text-zinc-500 hover:text-white transition-colors" aria-label="Add event">
+        <h3 className="text-[10px] font-bold uppercase tracking-widest text-theme-muted">Up Next</h3>
+        <button type="button" onClick={onAddEvent} className="text-theme-muted hover:text-theme-primary transition-colors" aria-label="Add event">
           <span className="material-symbols-outlined text-[18px]">add</span>
         </button>
       </div>
@@ -366,10 +366,10 @@ function UpNextPanel({ selectedDate, upNext, onAddEvent }) {
       <div className="flex items-start gap-4 mb-3">
         <div className="w-1 h-14 bg-primary rounded-full shadow-[0_0_10px_rgba(124,58,237,0.4)]"></div>
         <div className="flex-1 z-10">
-          <h2 className="text-xl font-bold text-white mb-1 leading-none">
+          <h2 className="text-xl font-bold text-theme-primary mb-1 leading-none">
             {upNext ? upNext.title : selectedDate.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })}
           </h2>
-          <p className="text-zinc-500 text-xs mb-3">{subtitle}</p>
+          <p className="text-theme-muted text-xs mb-3">{subtitle}</p>
         </div>
       </div>
 
@@ -377,7 +377,7 @@ function UpNextPanel({ selectedDate, upNext, onAddEvent }) {
         <button
           type="button"
           onClick={onAddEvent}
-          className="flex-1 bg-white/5 border border-white/5 text-white hover:bg-primary hover:border-primary py-2 rounded-md text-xs font-semibold transition-all"
+          className="flex-1 bg-[var(--hover-overlay)] border border-theme-subtle text-theme-primary hover:bg-primary hover:border-primary hover:text-white py-2 rounded-md text-xs font-semibold transition-all"
         >
           Add to Schedule
         </button>
@@ -410,22 +410,22 @@ function ScheduleTimeline({ selectedDate, items }) {
   }, [nowLabel, showNow, sorted]);
 
   return (
-    <div className="bg-card-dark border border-white/5 rounded-xl p-5 flex-1 min-h-[400px]">
+    <div className="bg-theme-card border border-theme-subtle rounded-xl p-5 flex-1 min-h-[400px] transition-colors duration-200">
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h3 className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">Schedule</h3>
-          <p className="text-[10px] text-zinc-600 mt-1">
+          <h3 className="text-[10px] font-bold uppercase tracking-widest text-theme-muted">Schedule</h3>
+          <p className="text-[10px] text-theme-muted mt-1">
             {selectedDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
           </p>
         </div>
-        <span className="text-[10px] font-mono text-zinc-600">{items.length} item{items.length === 1 ? '' : 's'}</span>
+        <span className="text-[10px] font-mono text-theme-muted">{items.length} item{items.length === 1 ? '' : 's'}</span>
       </div>
 
       <div className="relative pl-2 space-y-6">
-        <div className="absolute left-[54px] top-2 bottom-0 w-[1px] bg-zinc-800"></div>
+        <div className="absolute left-[54px] top-2 bottom-0 w-[1px] bg-theme-elevated"></div>
 
         {withNowLine.length === 0 ? (
-          <div className="text-text-secondary text-sm py-8 text-center">No scheduled items.</div>
+          <div className="text-theme-secondary text-sm py-8 text-center">No scheduled items.</div>
         ) : (
           withNowLine.map((item, index) => {
             if (item.isCurrentTime) {
@@ -445,10 +445,10 @@ function ScheduleTimeline({ selectedDate, items }) {
             if (isActive) {
               return (
                 <div key={item.key || index} className="flex gap-4 group">
-                  <span className="w-10 text-right text-xs font-mono text-white pt-1">{formatTime24FromMs(item.startAtMs)}</span>
+                  <span className="w-10 text-right text-xs font-mono text-theme-primary pt-1">{formatTime24FromMs(item.startAtMs)}</span>
                   <div className="flex-1 bg-primary/5 rounded border border-primary/20 p-2 ml-1 shadow-[0_0_15px_-5px_rgba(124,58,237,0.1)]">
                     <div className="flex justify-between items-start">
-                      <p className="text-xs font-bold text-white">{item.title}</p>
+                      <p className="text-xs font-bold text-theme-primary">{item.title}</p>
                       <span className="size-1.5 rounded-full bg-primary animate-pulse"></span>
                     </div>
                     <p className="text-[10px] text-primary mt-0.5">{item.location || item.meta || ''}</p>
@@ -459,11 +459,11 @@ function ScheduleTimeline({ selectedDate, items }) {
 
             return (
               <div key={item.key || index} className={`flex gap-4 group ${isPast ? 'opacity-60 hover:opacity-100' : ''} transition-opacity`}>
-                <span className="w-10 text-right text-xs font-mono text-zinc-600 pt-1">{formatTime24FromMs(item.startAtMs)}</span>
+                <span className="w-10 text-right text-xs font-mono text-theme-muted pt-1">{formatTime24FromMs(item.startAtMs)}</span>
                 <div className="flex-1 pl-4 relative">
-                  <div className="absolute left-[-5px] top-2 size-1.5 rounded-full bg-zinc-800 ring-4 ring-background-dark"></div>
-                  <p className="text-sm font-medium text-zinc-300">{item.title}</p>
-                  <p className="text-[10px] text-zinc-600">{item.location || item.meta || ''}</p>
+                  <div className="absolute left-[-5px] top-2 size-1.5 rounded-full bg-theme-elevated ring-4 ring-[var(--bg-primary)]"></div>
+                  <p className="text-sm font-medium text-theme-secondary">{item.title}</p>
+                  <p className="text-[10px] text-theme-muted">{item.location || item.meta || ''}</p>
                 </div>
               </div>
             );
