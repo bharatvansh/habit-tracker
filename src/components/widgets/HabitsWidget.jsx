@@ -131,7 +131,7 @@ function AddHabitForm({ onAdd, onCancel }) {
 }
 
 export default function HabitsWidget() {
-  const { habits, incrementProgress, addHabit } = useHabits();
+  const { habits, incrementProgress, addHabit, resetDailyProgress } = useHabits();
   const [isAddMode, setIsAddMode] = useState(false);
 
   const handleAddHabit = (habit) => {
@@ -144,14 +144,30 @@ export default function HabitsWidget() {
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <h3 className="text-white text-lg font-light">Habits</h3>
-        <button 
-          onClick={() => setIsAddMode(!isAddMode)}
-          className="text-text-muted hover:text-white transition-colors"
-        >
-          <span className="material-symbols-outlined text-[20px]">
-            {isAddMode ? 'close' : 'add'}
-          </span>
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => {
+              const ok = window.confirm('Archive today and reset all habit progress?');
+              if (ok) resetDailyProgress();
+            }}
+            className="text-text-muted hover:text-white transition-colors"
+            aria-label="Archive today and reset habits"
+            title="Archive today & reset"
+          >
+            <span className="material-symbols-outlined text-[20px]">restart_alt</span>
+          </button>
+          <button 
+            type="button"
+            onClick={() => setIsAddMode(!isAddMode)}
+            className="text-text-muted hover:text-white transition-colors"
+            aria-label={isAddMode ? 'Close add habit form' : 'Add habit'}
+          >
+            <span className="material-symbols-outlined text-[20px]">
+              {isAddMode ? 'close' : 'add'}
+            </span>
+          </button>
+        </div>
       </div>
       
       {/* Add Habit Form */}

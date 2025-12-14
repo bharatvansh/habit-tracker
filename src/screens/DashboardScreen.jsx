@@ -1,5 +1,5 @@
-import React from 'react';
-import { useUser, useTasks } from '../context';
+import React, { useState } from 'react';
+import { useReminders, useTasks, useUser } from '../context';
 import DesktopSidebar from '../components/navigation/DesktopSidebar';
 import SimpleHeader from '../components/shared/SimpleHeader';
 import FocusTimer from '../components/widgets/FocusTimer';
@@ -18,8 +18,63 @@ function getGreeting() {
 
 export default function DashboardScreen() {
   const { firstName } = useUser();
-  const { focusBlocksRemaining } = useTasks();
+  const { focusBlocksRemaining, addTask } = useTasks();
+  const { addReminder } = useReminders();
   const greeting = getGreeting();
+  const [command, setCommand] = useState('');
+  const [status, setStatus] = useState('');
+
+  const runCommand = () => {
+    const text = command.trim();
+    if (!text) return;
+
+    const taskMatch = text.match(/^(task|todo)\s*[:\-]?\s+(.+)$/i);
+    if (taskMatch) {
+      const title = taskMatch[2].trim();
+      const now = new Date();
+      addTask({
+        title,
+        label: 'PERSONAL',
+        dueAt: now.toISOString(),
+        dueDate: 'Today',
+        priority: 'medium',
+      });
+      setStatus(`Added task: ${title}`);
+      setCommand('');
+      return;
+    }
+
+    const reminderMatch = text.match(/^(remind|reminder)\s*[:\-]?\s+(.+)$/i);
+    if (reminderMatch) {
+      const rest = reminderMatch[2].trim();
+      const timeMatch = rest.match(/\s+at\s+(\d{1,2}):(\d{2})\s*$/i);
+      const title = (timeMatch ? rest.slice(0, timeMatch.index) : rest).trim();
+
+      const due = new Date();
+      due.setSeconds(0, 0);
+
+      if (timeMatch) {
+        const hh = Number(timeMatch[1]);
+        const mm = Number(timeMatch[2]);
+        due.setHours(Math.min(23, Math.max(0, hh)), Math.min(59, Math.max(0, mm)), 0, 0);
+        if (due.getTime() <= Date.now()) due.setDate(due.getDate() + 1);
+      } else {
+        // Default: 30 minutes from now, rounded to 5 minutes.
+        const ms = Date.now() + 30 * 60 * 1000;
+        const d = new Date(ms);
+        const rounded = Math.ceil(d.getMinutes() / 5) * 5;
+        d.setMinutes(rounded, 0, 0);
+        due.setTime(d.getTime());
+      }
+
+      addReminder({ title: title || 'Reminder', dueAt: due.toISOString() });
+      setStatus(`Added reminder: ${title || 'Reminder'}`);
+      setCommand('');
+      return;
+    }
+
+    setStatus("Try: 'task Buy milk' or 'remind Stretch at 19:30'");
+  };
 
   return (
     <div className="flex h-full w-full bg-background-dark">
@@ -67,10 +122,26 @@ export default function DashboardScreen() {
               <span className="material-symbols-outlined text-text-muted text-[18px] group-hover:text-primary transition-colors">terminal</span>
               <input 
                 className="bg-transparent border-none text-white placeholder-text-muted focus:ring-0 w-full font-mono text-xs h-full py-2" 
-                placeholder="Ask Habitual..." 
+                placeholder="Ask Habitual... (task Buy milk | remind Stretch at 19:30)"
                 type="text"
+                value={command}
+                onChange={(e) => {
+                  setCommand(e.target.value);
+                  if (status) setStatus('');
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    runCommand();
+                  }
+                }}
               />
             </div>
+            {status && (
+              <div className="mt-2 text-[10px] font-mono text-text-muted px-4">
+                {status}
+              </div>
+            )}
           </div>
         </main>
       </div>

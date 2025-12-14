@@ -1,5 +1,6 @@
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
+import { useUser } from '../../context';
 
 const navItems = [
   { path: '/', icon: 'dashboard', label: 'Overview' },
@@ -14,6 +15,7 @@ const bottomNavItems = [
 
 export default function DesktopSidebar() {
   const location = useLocation();
+  const { user } = useUser();
 
   const isActive = (path) => location.pathname === path;
 
@@ -81,7 +83,7 @@ export default function DesktopSidebar() {
             }}
           ></div>
           <div className="hidden lg:flex flex-col">
-            <p className="text-xs font-medium text-white">Alex Morgan</p>
+            <p className="text-xs font-medium text-white">{user?.displayName || user?.name || 'User'}</p>
           </div>
         </div>
       </div>

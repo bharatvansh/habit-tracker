@@ -1,17 +1,30 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useTasks, useTimer } from '../context';
 import DesktopSidebar from '../components/navigation/DesktopSidebar';
 import SimpleHeader from '../components/shared/SimpleHeader';
 
 export default function TasksScreen() {
-  // Sample day selector data
-  const today = new Date();
-  const days = [
-    { date: today.getDate(), day: today.toLocaleDateString('en-US', { weekday: 'short' }), isActive: true },
-    { date: today.getDate() + 1, day: new Date(today.getTime() + 86400000).toLocaleDateString('en-US', { weekday: 'short' }), isActive: false },
-  ];
+  const [selectedDate, setSelectedDate] = useState(() => {
+    const d = new Date();
+    return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  });
 
-  const dateString = today.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
+  const days = useMemo(() => {
+    const base = new Date();
+    const start = new Date(base.getFullYear(), base.getMonth(), base.getDate());
+    return Array.from({ length: 7 }, (_, i) => {
+      const d = new Date(start);
+      d.setDate(d.getDate() + i);
+      return {
+        key: d.toISOString(),
+        date: d.getDate(),
+        day: d.toLocaleDateString('en-US', { weekday: 'short' }),
+        fullDate: d,
+      };
+    });
+  }, []);
+
+  const dateString = selectedDate.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
 
   return (
     <div className="flex h-full w-full bg-background-dark">
@@ -30,14 +43,15 @@ export default function TasksScreen() {
               <div className="flex items-center gap-1 overflow-x-auto no-scrollbar">
                 {days.map((dayItem) => (
                   <button
-                    key={dayItem.date}
+                      key={dayItem.key}
+                      onClick={() => setSelectedDate(dayItem.fullDate)}
                     className={`flex flex-col items-center justify-center w-10 h-14 rounded-lg shrink-0 transition-colors ${
-                      dayItem.isActive
+                        isSameDay(dayItem.fullDate, selectedDate)
                         ? 'bg-primary text-white shadow-neon'
                         : 'text-text-muted hover:text-white hover:bg-white/5'
                     }`}
                   >
-                    <span className={`text-[10px] font-medium ${dayItem.isActive ? 'opacity-80' : ''}`}>
+                    <span className={`text-[10px] font-medium ${isSameDay(dayItem.fullDate, selectedDate) ? 'opacity-80' : ''}`}>
                       {dayItem.date}
                     </span>
                     <span className="text-xs font-bold">{dayItem.day}</span>
@@ -55,7 +69,7 @@ export default function TasksScreen() {
 
               {/* Right Column - Task Board */}
               <div className="xl:col-span-5 flex flex-col gap-6 h-full">
-                <TaskBoard />
+                <TaskBoard selectedDate={selectedDate} />
               </div>
             </div>
           </div>
@@ -179,22 +193,46 @@ function ActiveFocusCard() {
 }
 
 // Task Board Component
-function TaskBoard() {
-  const { todoTasks, inProgressTasks, doneTasks, addTask, startTask, deleteTask } = useTasks();
+function TaskBoard({ selectedDate }) {
+  const { tasks, addTask, startTask, deleteTask } = useTasks();
   const [isAddMode, setIsAddMode] = useState(false);
   const [newTaskTitle, setNewTaskTitle] = useState('');
   const [newTaskLabel, setNewTaskLabel] = useState('DEV');
+  const [newTaskTime, setNewTaskTime] = useState('');
+
+  const tasksForDay = useMemo(() => {
+    return tasks.filter((t) => {
+      const ms = new Date(t.dueAt).getTime();
+      if (!Number.isFinite(ms)) return false;
+      return isSameDay(new Date(ms), selectedDate);
+    });
+  }, [selectedDate, tasks]);
+
+  const todoTasks = tasksForDay.filter((t) => t.status === 'todo');
+  const inProgressTasks = tasksForDay.filter((t) => t.status === 'in-progress');
+  const doneTasks = tasksForDay.filter((t) => t.status === 'done');
 
   const handleAddTask = (e) => {
     e.preventDefault();
     if (newTaskTitle.trim()) {
+      const due = new Date(selectedDate);
+      if (newTaskTime && newTaskTime.includes(':')) {
+        const [hh, mm] = newTaskTime.split(':').map((v) => Number(v));
+        due.setHours(Number.isFinite(hh) ? hh : 9, Number.isFinite(mm) ? mm : 0, 0, 0);
+      } else {
+        due.setHours(9, 0, 0, 0);
+      }
+
       addTask({
         title: newTaskTitle.trim(),
         label: newTaskLabel,
-        dueDate: 'Today',
+        dueAt: due.toISOString(),
+        dueDate: isSameDay(selectedDate, new Date()) ? 'Today' : selectedDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+        dueTime: newTaskTime || undefined,
         priority: 'medium',
       });
       setNewTaskTitle('');
+      setNewTaskTime('');
       setIsAddMode(false);
     }
   };
@@ -238,6 +276,13 @@ function TaskBoard() {
               <option value="MEETING">MEETING</option>
               <option value="PERSONAL">PERSONAL</option>
             </select>
+            <input
+              type="time"
+              value={newTaskTime}
+              onChange={(e) => setNewTaskTime(e.target.value)}
+              className="bg-black border border-white/10 rounded px-3 py-2 text-white text-sm focus:border-primary focus:outline-none w-28"
+              aria-label="Due time"
+            />
             <button
               type="submit"
               className="flex-1 bg-primary text-white text-sm font-medium py-2 px-4 rounded hover:bg-primary/80 transition-colors"
@@ -292,6 +337,10 @@ function TaskBoard() {
       </div>
     </>
   );
+}
+
+function isSameDay(a, b) {
+  return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
 }
 
 // Task Card Component

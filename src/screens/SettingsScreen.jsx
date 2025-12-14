@@ -1,5 +1,5 @@
-import React from 'react';
-import { useUser } from '../context';
+import React, { useMemo } from 'react';
+import { useHabits, useReminders, useTasks, useUser } from '../context';
 import DesktopSidebar from '../components/navigation/DesktopSidebar';
 import SimpleHeader from '../components/shared/SimpleHeader';
 
@@ -44,6 +44,75 @@ export default function SettingsScreen() {
 
 // Stat Cards Section Component
 function StatCardsSection() {
+  const { habits, history } = useHabits();
+  const { tasks } = useTasks();
+  const { reminders } = useReminders();
+
+  const storage = useMemo(() => {
+    const bytes = estimateHabitualStorageBytes();
+    const max = 5 * 1024 * 1024; // typical localStorage budget (best-effort estimate)
+    const pct = Math.min(100, Math.max(0, Math.round((bytes / max) * 100)));
+    return { bytes, pct };
+  }, [habits, history, reminders, tasks]);
+
+  const streak = useMemo(() => {
+    const todayKey = new Date().toISOString().split('T')[0];
+    const map = new Map();
+
+    history.forEach((r) => {
+      if (!r?.date || !Array.isArray(r.habits) || r.habits.length === 0) return;
+      const complete = r.habits.every((h) => Boolean(h.completed));
+      map.set(r.date, complete);
+    });
+
+    // Today's completion (live)
+    const todayComplete = habits.length > 0 && habits.every((h) => h.current >= h.target);
+    map.set(todayKey, todayComplete);
+
+    // Current streak: walk backwards from today
+    let current = 0;
+    for (let i = 0; i < 400; i++) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      const key = d.toISOString().split('T')[0];
+      const complete = map.get(key);
+      if (complete === true) current += 1;
+      else break;
+    }
+
+    // Best streak: sort known dates and compute max consecutive run
+    const keys = Array.from(map.entries())
+      .filter(([, v]) => v === true)
+      .map(([k]) => k)
+      .sort();
+
+    let best = 0;
+    let run = 0;
+    let prev = null;
+    keys.forEach((k) => {
+      const d = new Date(k);
+      if (!prev) {
+        run = 1;
+        best = Math.max(best, run);
+        prev = d;
+        return;
+      }
+      const diffDays = Math.round((d.getTime() - prev.getTime()) / (24 * 60 * 60 * 1000));
+      if (diffDays === 1) run += 1;
+      else run = 1;
+      best = Math.max(best, run);
+      prev = d;
+    });
+
+    return { current, best: Math.max(best, current) };
+  }, [habits, history]);
+
+  const completed = useMemo(() => {
+    const tasksDone = tasks.filter((t) => t.status === 'done').length;
+    const remindersDone = reminders.filter((r) => r.isCompleted).length;
+    return { tasksDone, remindersDone };
+  }, [reminders, tasks]);
+
   return (
     <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
       {/* Storage Card */}
@@ -53,11 +122,17 @@ function StatCardsSection() {
           <span className="material-symbols-outlined text-zinc-600 text-[20px]">cloud</span>
         </div>
         <div className="flex items-end gap-3">
-          <h3 className="text-3xl font-light text-white">45<span className="text-zinc-600 text-xl">%</span></h3>
+          <h3 className="text-3xl font-light text-white">
+            {storage.pct}
+            <span className="text-zinc-600 text-xl">%</span>
+          </h3>
         </div>
         <div className="w-full bg-zinc-900 h-0.5 mt-4">
-          <div className="bg-primary h-full w-[45%]"></div>
+          <div className="bg-primary h-full" style={{ width: `${storage.pct}%` }}></div>
         </div>
+        <p className="text-[10px] text-text-secondary mt-3 font-mono">
+          ~{Math.round(storage.bytes / 1024)} KB used
+        </p>
       </div>
 
       {/* Streak Card */}
@@ -67,12 +142,52 @@ function StatCardsSection() {
           <span className="material-symbols-outlined text-zinc-600 text-[20px]">local_fire_department</span>
         </div>
         <div className="flex items-end gap-3">
-          <h3 className="text-3xl font-light text-white">85<span className="text-zinc-600 text-xl">Days</span></h3>
+          <h3 className="text-3xl font-light text-white">
+            {streak.current}
+            <span className="text-zinc-600 text-xl">Days</span>
+          </h3>
         </div>
-        <p className="text-xs text-text-secondary mt-4 font-mono">BEST: 120</p>
+        <p className="text-xs text-text-secondary mt-4 font-mono">BEST: {streak.best}</p>
+      </div>
+
+      {/* Completed Card */}
+      <div className="flex flex-col justify-between p-6 bg-surface-dark rounded-xl border border-border-dark/50">
+        <div className="flex justify-between items-start mb-6">
+          <p className="text-text-secondary text-sm font-medium">Completed</p>
+          <span className="material-symbols-outlined text-zinc-600 text-[20px]">task_alt</span>
+        </div>
+        <div className="flex flex-col gap-2">
+          <div className="flex items-end gap-3">
+            <h3 className="text-3xl font-light text-white">{completed.tasksDone}</h3>
+            <span className="text-zinc-600 text-xs font-mono">tasks done</span>
+          </div>
+          <div className="flex items-end gap-3">
+            <h3 className="text-2xl font-light text-white">{completed.remindersDone}</h3>
+            <span className="text-zinc-600 text-xs font-mono">reminders done</span>
+          </div>
+        </div>
+        <p className="text-[10px] text-text-secondary mt-4 font-mono">
+          Keep the streak alive.
+        </p>
       </div>
     </section>
   );
+}
+
+function estimateHabitualStorageBytes() {
+  try {
+    let total = 0;
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (!key || !key.startsWith('habitual_')) continue;
+      const value = localStorage.getItem(key) || '';
+      // Rough estimate: JS strings are ~2 bytes/char.
+      total += (key.length + value.length) * 2;
+    }
+    return total;
+  } catch {
+    return 0;
+  }
 }
 
 // Account Section Component

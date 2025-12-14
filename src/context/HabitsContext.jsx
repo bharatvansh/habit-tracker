@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const HABITS_STORAGE_KEY = 'habitual_habits';
+const HABITS_LAST_ACTIVE_KEY = 'habitual_habits_last_active_date';
 
 const defaultHabits = [
   {
@@ -27,6 +28,10 @@ const defaultHabits = [
 
 const HabitsContext = createContext(undefined);
 
+function dateKey(d = new Date()) {
+  return d.toISOString().split('T')[0];
+}
+
 export function HabitsProvider({ children }) {
   const [habits, setHabits] = useState(() => {
     try {
@@ -51,6 +56,53 @@ export function HabitsProvider({ children }) {
     }
     return [];
   });
+
+  // Daily rollover: if the app is opened on a new day, archive the previous day's progress.
+  useEffect(() => {
+    const todayKey = dateKey(new Date());
+    let lastKey = null;
+    try {
+      lastKey = localStorage.getItem(HABITS_LAST_ACTIVE_KEY);
+    } catch {
+      lastKey = null;
+    }
+
+    if (!lastKey) {
+      try {
+        localStorage.setItem(HABITS_LAST_ACTIVE_KEY, todayKey);
+      } catch {
+        // ignore
+      }
+      return;
+    }
+
+    if (lastKey !== todayKey) {
+      // Archive lastKey progress (what the user last had) and reset.
+      const record = {
+        date: lastKey,
+        habits: habits.map((h) => ({
+          id: h.id,
+          name: h.name,
+          current: h.current,
+          target: h.target,
+          completed: h.current >= h.target,
+        })),
+      };
+
+      setHistory((prev) => {
+        const withoutSame = prev.filter((r) => r.date !== lastKey);
+        return [...withoutSame, record];
+      });
+
+      setHabits((prev) => prev.map((h) => ({ ...h, current: 0 })));
+
+      try {
+        localStorage.setItem(HABITS_LAST_ACTIVE_KEY, todayKey);
+      } catch {
+        // ignore
+      }
+    }
+  }, []);
 
   // Persist habits to localStorage
   useEffect(() => {
@@ -77,6 +129,11 @@ export function HabitsProvider({ children }) {
       current: 0,
     };
     setHabits((prev) => [...prev, newHabit]);
+    try {
+      localStorage.setItem(HABITS_LAST_ACTIVE_KEY, dateKey(new Date()));
+    } catch {
+      // ignore
+    }
   };
 
   const deleteHabit = (habitId) => {
@@ -93,6 +150,12 @@ export function HabitsProvider({ children }) {
         return habit;
       })
     );
+
+    try {
+      localStorage.setItem(HABITS_LAST_ACTIVE_KEY, dateKey(new Date()));
+    } catch {
+      // ignore
+    }
   };
 
   const resetDailyProgress = () => {
@@ -112,12 +175,24 @@ export function HabitsProvider({ children }) {
 
     // Reset all habits to 0
     setHabits((prev) => prev.map((h) => ({ ...h, current: 0 })));
+
+    try {
+      localStorage.setItem(HABITS_LAST_ACTIVE_KEY, dateKey(new Date()));
+    } catch {
+      // ignore
+    }
   };
 
   const updateHabit = (habitId, updates) => {
     setHabits((prev) =>
       prev.map((habit) => (habit.id === habitId ? { ...habit, ...updates } : habit))
     );
+
+    try {
+      localStorage.setItem(HABITS_LAST_ACTIVE_KEY, dateKey(new Date()));
+    } catch {
+      // ignore
+    }
   };
 
   // Calculate overall completion percentage

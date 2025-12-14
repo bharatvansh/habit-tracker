@@ -41,17 +41,91 @@ const defaultTasks = [
 
 const TasksContext = createContext(undefined);
 
+function safeJsonParse(value, fallback) {
+  try {
+    if (!value) return fallback;
+    return JSON.parse(value);
+  } catch {
+    return fallback;
+  }
+}
+
+function isIsoDateString(value) {
+  return typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value);
+}
+
+function toDueAtISO({ dueAt, dueDate, dueTime }) {
+  // Prefer explicit dueAt if valid
+  if (typeof dueAt === 'string') {
+    const ms = new Date(dueAt).getTime();
+    if (Number.isFinite(ms)) return new Date(ms).toISOString();
+  }
+
+  const now = new Date();
+  let base = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+  if (typeof dueDate === 'string') {
+    const lower = dueDate.toLowerCase();
+    if (lower.includes('tomorrow')) {
+      base.setDate(base.getDate() + 1);
+    } else if (lower.includes('today')) {
+      // keep
+    } else if (isIsoDateString(dueDate)) {
+      const [y, m, d] = dueDate.split('-').map((v) => Number(v));
+      base = new Date(y, (m || 1) - 1, d || 1);
+    } else {
+      const parsed = new Date(dueDate);
+      if (Number.isFinite(parsed.getTime())) {
+        base = new Date(parsed.getFullYear(), parsed.getMonth(), parsed.getDate());
+      }
+    }
+  }
+
+  if (typeof dueTime === 'string' && dueTime.includes(':')) {
+    const [hh, mm] = dueTime.split(':').map((v) => Number(v));
+    base.setHours(Number.isFinite(hh) ? hh : 9, Number.isFinite(mm) ? mm : 0, 0, 0);
+  } else {
+    base.setHours(9, 0, 0, 0);
+  }
+
+  return base.toISOString();
+}
+
+function normalizeTask(task) {
+  if (!task || typeof task !== 'object') return null;
+  const id = typeof task.id === 'string' ? task.id : Date.now().toString();
+  const title = typeof task.title === 'string' ? task.title : 'Untitled Task';
+  const label = typeof task.label === 'string' ? task.label : 'TASK';
+  const status = ['todo', 'in-progress', 'done'].includes(task.status) ? task.status : 'todo';
+  const priority = typeof task.priority === 'string' ? task.priority : 'medium';
+  const dueDate = typeof task.dueDate === 'string' ? task.dueDate : 'Today';
+  const dueTime = typeof task.dueTime === 'string' ? task.dueTime : undefined;
+  const dueAt = toDueAtISO({ dueAt: task.dueAt, dueDate, dueTime });
+  const subtasks = Array.isArray(task.subtasks) ? task.subtasks : [];
+  const createdAt = typeof task.createdAt === 'string' ? task.createdAt : new Date().toISOString();
+  const completedAt = typeof task.completedAt === 'string' ? task.completedAt : undefined;
+
+  return {
+    ...task,
+    id,
+    title,
+    label,
+    status,
+    priority,
+    dueDate,
+    dueTime,
+    dueAt,
+    subtasks,
+    createdAt,
+    completedAt,
+  };
+}
+
 export function TasksProvider({ children }) {
   const [tasks, setTasks] = useState(() => {
-    try {
-      const stored = localStorage.getItem(TASKS_STORAGE_KEY);
-      if (stored) {
-        return JSON.parse(stored);
-      }
-    } catch (error) {
-      console.error('Failed to load tasks from localStorage:', error);
-    }
-    return defaultTasks;
+    const stored = safeJsonParse(localStorage.getItem(TASKS_STORAGE_KEY), null);
+    const seed = Array.isArray(stored) ? stored : defaultTasks;
+    return seed.map(normalizeTask).filter(Boolean);
   });
 
   // Persist to localStorage
@@ -64,14 +138,17 @@ export function TasksProvider({ children }) {
   }, [tasks]);
 
   const addTask = (task) => {
-    const newTask = {
+    const newTask = normalizeTask({
       ...task,
       id: Date.now().toString(),
       status: 'todo',
       subtasks: task.subtasks || [],
       createdAt: new Date().toISOString(),
-    };
-    setTasks((prev) => [...prev, newTask]);
+      dueAt: task.dueAt,
+      dueDate: task.dueDate || 'Today',
+      dueTime: task.dueTime,
+    });
+    setTasks((prev) => [...prev, newTask].map(normalizeTask).filter(Boolean));
     return newTask;
   };
 
@@ -81,7 +158,7 @@ export function TasksProvider({ children }) {
 
   const updateTask = (taskId, updates) => {
     setTasks((prev) =>
-      prev.map((task) => (task.id === taskId ? { ...task, ...updates } : task))
+      prev.map((task) => (task.id === taskId ? normalizeTask({ ...task, ...updates }) : task)).filter(Boolean)
     );
   };
 
@@ -127,13 +204,8 @@ export function TasksProvider({ children }) {
 
   // Get the next upcoming task (first todo task with the earliest due date/time)
   const upNextTask = todoTasks
-    .filter((t) => t.dueTime)
-    .sort((a, b) => {
-      if (a.dueTime && b.dueTime) {
-        return a.dueTime.localeCompare(b.dueTime);
-      }
-      return 0;
-    })[0] || todoTasks[0] || null;
+    .slice()
+    .sort((a, b) => new Date(a.dueAt).getTime() - new Date(b.dueAt).getTime())[0] || null;
 
   // Calculate focus blocks remaining (tasks not done)
   const focusBlocksRemaining = tasks.filter((t) => t.status !== 'done').length;

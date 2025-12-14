@@ -106,13 +106,15 @@ describe('Property 2: Responsive Navigation Display', () => {
   // Helper to render both navigation components
   function renderNavigationComponents() {
     return render(
-      <MemoryRouter initialEntries={['/']}>
-        <Routes>
-          <Route path="/" element={<div>Dashboard</div>} />
-        </Routes>
-        <DesktopSidebar />
-        <GlobalNavigation />
-      </MemoryRouter>
+      <AppProviders>
+        <MemoryRouter initialEntries={['/']}>
+          <Routes>
+            <Route path="/" element={<div>Dashboard</div>} />
+          </Routes>
+          <DesktopSidebar />
+          <GlobalNavigation />
+        </MemoryRouter>
+      </AppProviders>
     );
   }
 

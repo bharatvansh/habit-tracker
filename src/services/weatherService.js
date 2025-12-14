@@ -50,13 +50,15 @@ export async function getWeather(lat = DEFAULT_LAT, lon = DEFAULT_LON) {
     
     const weatherCode = data.current.weather_code;
     const weatherInfo = weatherCodeMap[weatherCode] || { condition: 'Unknown', icon: 'cloud' };
+
+    const location = await getLocationLabel(lat, lon);
     
     return {
       temperature: Math.round(data.current.temperature_2m),
       condition: weatherInfo.condition,
       icon: weatherInfo.icon,
       uvIndex: Math.round(data.current.uv_index || 0),
-      location: 'San Francisco',
+      location,
     };
   } catch (error) {
     console.error('Failed to fetch weather:', error);
@@ -69,4 +71,25 @@ export async function getWeather(lat = DEFAULT_LAT, lon = DEFAULT_LON) {
       location: 'San Francisco',
     };
   }
+}
+
+async function getLocationLabel(lat, lon) {
+  // Best-effort reverse geocoding (no API key). If it fails, fall back gracefully.
+  try {
+    const url = `https://geocoding-api.open-meteo.com/v1/reverse?latitude=${lat}&longitude=${lon}&count=1&language=en&format=json`;
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`Geocoding API error: ${response.status}`);
+    const data = await response.json();
+
+    const first = data?.results?.[0];
+    const name = first?.name;
+    const admin1 = first?.admin1;
+    const country = first?.country;
+    if (name && admin1) return `${name}, ${admin1}`;
+    if (name && country) return `${name}, ${country}`;
+    if (name) return name;
+  } catch {
+    // ignore
+  }
+  return 'Local';
 }
