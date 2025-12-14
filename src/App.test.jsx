@@ -55,38 +55,40 @@ describe('Property 1: Navigation Route Consistency', () => {
       fc.property(validRouteArb, (routePath) => {
         const { unmount } = renderAtRoute(routePath);
         
-        // Find the expected route config
-        const expectedRoute = routeConfig.find(r => r.path === routePath);
-        const expectedNavItem = navItems.find(n => n.path === routePath);
-        
-        // Verify the correct screen is rendered by checking for screen title
-        // Use getAllByRole since Dashboard has multiple h1 elements (sidebar logo + main title)
-        const screenTitles = screen.getAllByRole('heading', { level: 1 });
-        // At least one heading should contain the expected route name or related content
-        const hasExpectedContent = screenTitles.some(title => {
-          const text = title.textContent;
-          // Dashboard shows "Good Morning/Afternoon/Evening, [Name]." instead of "Dashboard"
-          if (expectedRoute.name === 'Dashboard') {
-            return text.includes('Good Morning') || text.includes('Good Afternoon') || text.includes('Good Evening') || text.includes('Habitual');
-          }
-          return text.includes(expectedRoute.name) || text.includes('Habitual');
-        });
-        expect(hasExpectedContent).toBe(true);
-        
-        // Verify the navigation item for this route has active styling (primary color)
-        const navLink = screen.getByTestId(`nav-${expectedNavItem.label.toLowerCase()}`);
-        expect(navLink).toHaveClass('text-primary');
-        
-        // Verify other nav items do NOT have active styling
-        navItems.forEach(item => {
-          if (item.path !== routePath) {
-            const otherNavLink = screen.getByTestId(`nav-${item.label.toLowerCase()}`);
-            expect(otherNavLink).not.toHaveClass('text-primary');
-            expect(otherNavLink).toHaveClass('text-text-muted');
-          }
-        });
-        
-        unmount();
+        try {
+          // Find the expected route config
+          const expectedRoute = routeConfig.find(r => r.path === routePath);
+          const expectedNavItem = navItems.find(n => n.path === routePath);
+
+          // Verify the correct screen is rendered by checking for screen title
+          // Use getAllByRole since Dashboard has multiple h1 elements (sidebar logo + main title)
+          const screenTitles = screen.getAllByRole('heading', { level: 1 });
+          // At least one heading should contain the expected route name or related content
+          const hasExpectedContent = screenTitles.some(title => {
+            const text = title.textContent;
+            // Dashboard shows "Good Morning/Afternoon/Evening, [Name]." instead of "Dashboard"
+            if (expectedRoute.name === 'Dashboard') {
+              return text.includes('Good Morning') || text.includes('Good Afternoon') || text.includes('Good Evening') || text.includes('Habitual');
+            }
+            return text.includes(expectedRoute.name) || text.includes('Habitual');
+          });
+          expect(hasExpectedContent).toBe(true);
+
+          // Verify the navigation item for this route has active styling (primary color)
+          const navLink = screen.getByTestId(`nav-${expectedNavItem.label.toLowerCase()}`);
+          expect(navLink).toHaveClass('text-primary');
+
+          // Verify other nav items do NOT have active styling
+          navItems.forEach(item => {
+            if (item.path !== routePath) {
+              const otherNavLink = screen.getByTestId(`nav-${item.label.toLowerCase()}`);
+              expect(otherNavLink).not.toHaveClass('text-primary');
+              expect(otherNavLink).toHaveClass('text-theme-muted');
+            }
+          });
+        } finally {
+          unmount();
+        }
       }),
       { numRuns: 100 }
     );

@@ -245,10 +245,16 @@ function TaskBoard({ selectedDate }) {
           <button 
             onClick={() => setIsAddMode(!isAddMode)}
             className="p-2 hover:bg-[var(--hover-overlay)] rounded-lg text-theme-muted hover:text-theme-primary transition-colors"
+            aria-label={isAddMode ? 'Close add task form' : 'Add new task'}
+            title={isAddMode ? 'Close' : 'Add Task'}
           >
             <span className="material-symbols-outlined text-[20px]">{isAddMode ? 'close' : 'add'}</span>
           </button>
-          <button className="p-2 hover:bg-[var(--hover-overlay)] rounded-lg text-theme-muted hover:text-theme-primary transition-colors">
+          <button
+            className="p-2 hover:bg-[var(--hover-overlay)] rounded-lg text-theme-muted hover:text-theme-primary transition-colors"
+            aria-label="Filter and sort tasks"
+            title="Filter and Sort"
+          >
             <span className="material-symbols-outlined text-[20px]">tune</span>
           </button>
         </div>
@@ -359,18 +365,22 @@ function TaskCard({ task, isActive, isDone, onStart, onDelete }) {
         }`}>
           {task.label}
         </span>
-        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="flex gap-1 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity">
           {!isActive && !isDone && onStart && (
             <button 
               onClick={() => onStart(task.id)}
-              className="p-1 hover:bg-primary/20 rounded text-primary"
+              className="p-1 hover:bg-primary/20 rounded text-primary focus:bg-primary/20 focus:outline-none focus:ring-2 focus:ring-primary/50"
+              aria-label={`Start task: ${task.title}`}
+              title="Start Task"
             >
               <span className="material-symbols-outlined text-[16px]">play_arrow</span>
             </button>
           )}
           <button 
             onClick={() => onDelete(task.id)}
-            className="p-1 hover:bg-red-500/20 rounded text-red-400"
+            className="p-1 hover:bg-red-500/20 rounded text-red-400 focus:bg-red-500/20 focus:outline-none focus:ring-2 focus:ring-red-500/50"
+            aria-label={`Delete task: ${task.title}`}
+            title="Delete Task"
           >
             <span className="material-symbols-outlined text-[16px]">delete</span>
           </button>
